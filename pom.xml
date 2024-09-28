@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.herculanoleo</groupId>
+    <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+    <name>parent</name>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring-boot.version>[3.2.0,3.3.0]</spring-boot.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
+        <common-lang3.version>3.17.0</common-lang3.version>
+        <javapoet.version>1.13.0</javapoet.version>
+        <lombok.version>1.18.34</lombok.version>
+        <hibernate.version>6.4.1.Final</hibernate.version>
+        <junit.version>5.11.1</junit.version>
+        <mockito.version>5.14.0</mockito.version>
+        <jacoco.version>0.8.12</jacoco.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <modules>
+        <module>spring-mapper-enum-annotations</module>
+        <module>spring-mapper-enum</module>
+
+        <!-- TEST MODULE -->
+        <module>spring-mapper-enum-sample-feign</module>
+        <module>spring-mapper-enum-sample-jpa</module>
+    </modules>
+
+</project>
