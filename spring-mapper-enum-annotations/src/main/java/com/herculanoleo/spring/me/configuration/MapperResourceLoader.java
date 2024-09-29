@@ -11,7 +11,7 @@ import org.springframework.format.Formatter;
 
 import java.util.*;
 
-public class ResourceLoader {
+public class MapperResourceLoader {
 
     private final MapperEnumFormatterFactory formatterFactory = new MapperEnumFormatterFactory();
 
@@ -21,7 +21,7 @@ public class ResourceLoader {
 
     protected Collection<Class<? extends MapperEnum>> classes;
 
-    public ResourceLoader(ApplicationContext applicationContext) {
+    public MapperResourceLoader(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
         this.scanner = new ClassPathScanningCandidateComponentProvider(false);
         this.scanner.addIncludeFilter(new AssignableTypeFilter(MapperEnum.class));
@@ -55,7 +55,8 @@ public class ResourceLoader {
         for (var basePackage : basePackages) {
             var beanDefinitions = scanner.findCandidateComponents(basePackage);
             for (var beanDefinition : beanDefinitions) {
-                var clazz = Class.forName(beanDefinition.getBeanClassName());
+                var classLoader = Thread.currentThread().getContextClassLoader();
+                var clazz = Class.forName(beanDefinition.getBeanClassName(), true, classLoader);
                 if (MapperEnum.class.isAssignableFrom(clazz)) {
                     components.add(clazz.asSubclass(MapperEnum.class));
                 }

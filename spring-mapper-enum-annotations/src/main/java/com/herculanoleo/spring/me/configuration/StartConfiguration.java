@@ -15,23 +15,23 @@ public class StartConfiguration {
 
     private final FormattingConversionService conversionService;
 
-    private final ResourceLoader resourceLoader;
+    private final MapperResourceLoader mapperResourceLoader;
 
     private final ObjectMapper objectMapper;
 
-    public StartConfiguration(FormattingConversionService conversionService, ResourceLoader resourceLoader, ObjectMapper objectMapper) {
+    public StartConfiguration(FormattingConversionService conversionService, MapperResourceLoader mapperResourceLoader, ObjectMapper objectMapper) {
         this.conversionService = conversionService;
-        this.resourceLoader = resourceLoader;
+        this.mapperResourceLoader = mapperResourceLoader;
         this.objectMapper = objectMapper;
     }
 
     @PostConstruct
     @SuppressWarnings("unchecked")
     public void setup() {
-        var formatters = resourceLoader.serializableEnumFormatter();
+        var formatters = mapperResourceLoader.serializableEnumFormatter();
         formatters.forEach(conversionService::addFormatterForFieldType);
 
-        var classes = resourceLoader.getClasses();
+        var classes = mapperResourceLoader.getClasses();
 
         conversionService.addFormatterForFieldAnnotation(
                 new MapperEnumFormatterAnnotationFactory(new HashSet<>(classes))

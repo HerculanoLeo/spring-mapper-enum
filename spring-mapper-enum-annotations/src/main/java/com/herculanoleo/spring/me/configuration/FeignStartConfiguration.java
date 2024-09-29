@@ -11,18 +11,18 @@ import java.util.HashSet;
 
 public class FeignStartConfiguration implements FeignFormatterRegistrar {
 
-    private final ResourceLoader resourceLoader;
+    private final MapperResourceLoader mapperResourceLoader;
 
-    public FeignStartConfiguration(ResourceLoader resourceLoader) {
-        this.resourceLoader = resourceLoader;
+    public FeignStartConfiguration(MapperResourceLoader mapperResourceLoader) {
+        this.mapperResourceLoader = mapperResourceLoader;
     }
 
     @Override
     public void registerFormatters(FormatterRegistry registry) {
-        var formatters = resourceLoader.serializableEnumFormatter();
+        var formatters = mapperResourceLoader.serializableEnumFormatter();
         formatters.forEach(registry::addFormatterForFieldType);
         registry.addFormatterForFieldAnnotation(
-                new MapperEnumFormatterAnnotationFactory(new HashSet<>(resourceLoader.getClasses()))
+                new MapperEnumFormatterAnnotationFactory(new HashSet<>(mapperResourceLoader.getClasses()))
         );
     }
 

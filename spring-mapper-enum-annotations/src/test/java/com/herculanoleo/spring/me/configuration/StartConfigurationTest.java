@@ -32,7 +32,7 @@ public class StartConfigurationTest {
     private FormattingConversionService conversionService;
 
     @Mock
-    private ResourceLoader resourceLoader;
+    private MapperResourceLoader mapperResourceLoader;
 
     @Mock
     private ObjectMapper objectMapper;
@@ -54,9 +54,9 @@ public class StartConfigurationTest {
             var factory = new MapperEnumFormatterFactory();
             var expectedFormatter = factory.getFormatter(MapperEnumMock.class);
 
-            doReturn(Map.of(MapperEnumMock.class, expectedFormatter)).when(resourceLoader).serializableEnumFormatter();
+            doReturn(Map.of(MapperEnumMock.class, expectedFormatter)).when(mapperResourceLoader).serializableEnumFormatter();
 
-            doReturn(Set.of(MapperEnumMock.class)).when(resourceLoader).getClasses();
+            doReturn(Set.of(MapperEnumMock.class)).when(mapperResourceLoader).getClasses();
 
             startConfiguration.setup();
 

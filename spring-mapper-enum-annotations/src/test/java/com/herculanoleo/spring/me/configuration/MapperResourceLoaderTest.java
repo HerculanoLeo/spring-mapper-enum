@@ -25,31 +25,31 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ResourceLoaderTest {
+public class MapperResourceLoaderTest {
 
     @Mock
     private ApplicationContext applicationContext;
 
     @Spy
     @InjectMocks
-    private ResourceLoader resourceLoader;
+    private MapperResourceLoader mapperResourceLoader;
 
     @DisplayName("Should call findCandidateComponent and set classes when call setup")
     @Test
     public void setupTest() throws ClassNotFoundException {
         var expectResult = Set.of(MapperEnumMock.class);
-        doReturn(expectResult).when(resourceLoader).findCandidateComponent();
+        doReturn(expectResult).when(mapperResourceLoader).findCandidateComponent();
 
-        resourceLoader.setup();
+        mapperResourceLoader.setup();
 
-        assertEquals(expectResult, resourceLoader.getClasses());
+        assertEquals(expectResult, mapperResourceLoader.getClasses());
     }
 
     @DisplayName("Should create formatters for only enums that implement MapperEnum interfaces")
     @Test
     public void serializableEnumFormatterTest() {
-        resourceLoader.classes = Set.of(MapperEnumMock.class, WrongMapperMock.class);
-        var formattersMap = resourceLoader.serializableEnumFormatter();
+        mapperResourceLoader.classes = Set.of(MapperEnumMock.class, WrongMapperMock.class);
+        var formattersMap = mapperResourceLoader.serializableEnumFormatter();
 
         assertEquals(1, formattersMap.size());
         assertTrue(formattersMap.entrySet().stream().allMatch((entry) -> entry.getKey().isEnum()
@@ -59,8 +59,8 @@ public class ResourceLoaderTest {
     @DisplayName("Should not create formatters for class that implement MapperEnum interfaces")
     @Test
     public void serializableEnumFormatterEmptyListTest() {
-        resourceLoader.classes = Set.of(WrongMapperMock.class);
-        var formattersMap = resourceLoader.serializableEnumFormatter();
+        mapperResourceLoader.classes = Set.of(WrongMapperMock.class);
+        var formattersMap = mapperResourceLoader.serializableEnumFormatter();
         assertEquals(0, formattersMap.size());
     }
 
@@ -74,9 +74,9 @@ public class ResourceLoaderTest {
                         "org.example.test.enums"
                 )
         )
-                .when(resourceLoader)
+                .when(mapperResourceLoader)
                 .getBasePackages();
-        var classes = this.resourceLoader.findCandidateComponent();
+        var classes = this.mapperResourceLoader.findCandidateComponent();
         assertTrue(classes.containsAll(List.of(
                 WrongMapperMock.class,
                 MapperEnumMock.class,
@@ -93,7 +93,7 @@ public class ResourceLoaderTest {
         when(applicationContext.findAnnotationOnBean(MockStarter.class.getCanonicalName(), EnableMapperEnum.class))
                 .thenReturn(MockStarter.class.getAnnotation(EnableMapperEnum.class));
 
-        var basePackages = resourceLoader.getBasePackages();
+        var basePackages = mapperResourceLoader.getBasePackages();
         assertTrue(basePackages.containsAll(List.of(
                 "org.example.test",
                 "com.herculanoleo.spring",
@@ -107,7 +107,7 @@ public class ResourceLoaderTest {
         when(applicationContext.getBeansWithAnnotation(EnableMapperEnum.class))
                 .thenReturn(Map.of());
 
-        var basePackages = resourceLoader.getBasePackages();
+        var basePackages = mapperResourceLoader.getBasePackages();
         assertTrue(basePackages.isEmpty());
     }
 

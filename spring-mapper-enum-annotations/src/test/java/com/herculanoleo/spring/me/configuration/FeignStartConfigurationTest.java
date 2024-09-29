@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 public class FeignStartConfigurationTest {
 
     @Mock
-    private ResourceLoader resourceLoader;
+    private MapperResourceLoader mapperResourceLoader;
 
     @Spy
     @InjectMocks
@@ -40,8 +40,8 @@ public class FeignStartConfigurationTest {
             var expectedFormatter = factory.getFormatter(MapperEnumMock.class);
 
             doReturn(Map.of(MapperEnumMock.class, expectedFormatter))
-                    .when(resourceLoader).serializableEnumFormatter();
-            doReturn(Set.of(MapperEnumMock.class)).when(resourceLoader).getClasses();
+                    .when(mapperResourceLoader).serializableEnumFormatter();
+            doReturn(Set.of(MapperEnumMock.class)).when(mapperResourceLoader).getClasses();
 
             var registry = mock(FormatterRegistry.class);
 

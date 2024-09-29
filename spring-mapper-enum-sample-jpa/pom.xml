@@ -142,4 +142,16 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+        </repository>
+
+        <repository>
+            <id>nexus3-herculanoleo</id>
+            <url>https://nexus3.lodh8.com/repository/maven-releases/</url>
+        </repository>
+    </repositories>
+
 </project>
