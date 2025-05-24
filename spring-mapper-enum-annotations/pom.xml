@@ -4,7 +4,7 @@
 
     <groupId>com.herculanoleo</groupId>
     <artifactId>spring-mapper-enum-annotations</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -12,15 +12,15 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-boot.version>[3.2.0,3.3.0]</spring-boot.version>
+        <spring-boot.version>[3.2.0,3.4.0]</spring-boot.version>
         <spring-cloud.version>2023.0.3</spring-cloud.version>
         <common-lang3.version>3.17.0</common-lang3.version>
         <javapoet.version>1.13.0</javapoet.version>
-        <lombok.version>1.18.34</lombok.version>
-        <hibernate.version>6.4.1.Final</hibernate.version>
-        <junit.version>5.11.1</junit.version>
-        <mockito.version>5.14.0</mockito.version>
-        <jacoco.version>0.8.12</jacoco.version>
+        <persistence-api.version>3.1.0</persistence-api.version>
+        <lombok.version>1.18.38</lombok.version>
+        <junit.version>5.12.2</junit.version>
+        <mockito.version>5.18.0</mockito.version>
+        <jacoco.version>0.8.13</jacoco.version>
     </properties>
 
     <dependencyManagement>
@@ -44,11 +44,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>${spring-boot.version}</version>
-            <scope>provided</scope>
-            <optional>true</optional>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>${persistence-api.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -100,7 +99,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.0</version>
             </plugin>
 
             <plugin>
@@ -173,7 +172,7 @@
         </repository>
 
         <repository>
-            <id>github-mapper-enum</id>
+            <id>github-packages</id>
             <url>https://maven.pkg.github.com/herculanoleo/spring-mapper-enum/</url>
         </repository>
 
@@ -188,7 +187,7 @@
             <id>github</id>
             <distributionManagement>
                 <repository>
-                    <id>github-mapper-enum</id>
+                    <id>github-packages</id>
                     <url>https://maven.pkg.github.com/herculanoleo/spring-mapper-enum/</url>
                 </repository>
             </distributionManagement>

@@ -5,20 +5,20 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
+        <version>3.4.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.herculanoleo</groupId>
     <artifactId>spring-mapper-enum-sample-jpa</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <name>spring-mapper-enum-sample-jpa</name>
     <description>spring-mapper-enum-sample-jpa</description>
 
     <properties>
         <java.version>17</java.version>
         <serializable-enum.version>1.0.0</serializable-enum.version>
-        <jacoco.version>0.8.11</jacoco.version>
+        <jacoco.version>0.8.13</jacoco.version>
     </properties>
 
     <dependencies>
@@ -78,7 +78,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.0</version>
                 <configuration>
                     <generatedSourcesDirectory>${project.build.directory}/generated-sources/</generatedSourcesDirectory>
                     <annotationProcessorPaths>

@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.4</version>
+        <version>3.4.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.herculanoleo</groupId>
     <artifactId>spring-mapper-enum-sample-feign</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 
     <name>spring-mapper-enum-sample-feign</name>
     <description>spring-mapper-enum-sample-feign</description>
@@ -20,7 +20,7 @@
         <java.version>17</java.version>
         <serializable-enum.version>1.0.0</serializable-enum.version>
         <jacoco.version>0.8.11</jacoco.version>
-        <spring-cloud.version>2023.0.3</spring-cloud.version>
+        <spring-cloud.version>2024.0.1</spring-cloud.version>
     </properties>
 
     <dependencyManagement>
@@ -79,6 +79,27 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.0</version>
+                <configuration>
+                    <generatedSourcesDirectory>${project.build.directory}/generated-sources/</generatedSourcesDirectory>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>com.herculanoleo</groupId>
+                            <artifactId>spring-mapper-enum</artifactId>
+                            <version>${project.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
