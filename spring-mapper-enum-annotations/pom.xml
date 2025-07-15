@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-boot.version>[3.2.0,3.4.0]</spring-boot.version>
         <spring-cloud.version>2023.0.3</spring-cloud.version>
-        <common-lang3.version>3.17.0</common-lang3.version>
+        <common-lang3.version>3.18.0</common-lang3.version>
         <javapoet.version>1.13.0</javapoet.version>
         <persistence-api.version>3.1.0</persistence-api.version>
         <lombok.version>1.18.38</lombok.version>
