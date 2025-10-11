@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a131e4a5-3373-4498-a319-b8451b9109b2" name="Changes" comment="feat(dependencies): upgrade nas dependencias e reorganizacao dos pom.xml">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/configuration/FeignStartConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/configuration/FeignStartConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/configuration/MapperResourceLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/configuration/MapperResourceLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/configuration/StartConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/configuration/StartConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/converter/json/MapperEnumJsonDeserializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/converter/json/MapperEnumJsonDeserializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/converter/json/MapperEnumJsonSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/converter/json/MapperEnumJsonSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatter.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatterAnnotationFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatterAnnotationFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatterFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatterFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/annotation/EnableFeignMapperEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/annotation/EnableFeignMapperEnum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/annotation/EnableMapperEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/annotation/EnableMapperEnum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/annotation/MapperEnumDBConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/annotation/MapperEnumDBConverter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/annotation/MapperEnumFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/annotation/MapperEnumFormat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/enums/MapperEnum.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/enums/MapperEnum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/exception/InvalidEnumException.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/exception/InvalidEnumException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/exception/InvalidGenericEnumException.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/exception/InvalidGenericEnumException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/exception/InvalidValueEnumException.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/exception/InvalidValueEnumException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/feign/MapperEnumQueryMapEncoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/models/feign/MapperEnumQueryMapEncoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/processor/GeneratedMapperEnumConverterProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/main/java/com/herculanoleo/spring/me/processor/GeneratedMapperEnumConverterProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/configuration/FeignStartConfigurationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/configuration/FeignStartConfigurationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/configuration/MapperResourceLoaderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/configuration/MapperResourceLoaderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/configuration/StartConfigurationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/configuration/StartConfigurationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/converter/json/MapperEnumJsonDeserializerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/converter/json/MapperEnumJsonDeserializerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/converter/json/MapperEnumJsonSerializerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/converter/json/MapperEnumJsonSerializerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatterAnnotationFactoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatterAnnotationFactoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatterFactoryTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatterFactoryTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatterTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/converter/web/MapperEnumFormatterTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/models/dto/MapperEnumQueryMapEncoderObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/models/dto/MapperEnumQueryMapEncoderObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/models/dto/WrongMapperMock.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/models/dto/WrongMapperMock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/models/enums/MapperEnumMock.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/models/enums/MapperEnumMock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/models/enums/MapperEnumTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/models/enums/MapperEnumTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/models/feign/MapperEnumQueryMapEncoderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/com/herculanoleo/spring/me/models/feign/MapperEnumQueryMapEncoderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/org/example/test/MockStarter.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/org/example/test/MockStarter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-annotations/src/test/java/org/example/test/enums/OutsidePackageMapperMock.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum-annotations/src/test/java/org/example/test/enums/OutsidePackageMapperMock.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/controller/PersonController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/controller/PersonController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonRegisterRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonRegisterRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonSearchRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonSearchRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonUpdateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonUpdateRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/models/enums/PersonStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/models/enums/PersonStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/openfeing/PersonClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/openfeing/PersonClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/service/PersonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/src/main/java/com/herculanoleo/spring/me/sample/service/PersonService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-feign/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-feign/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/controller/PersonController.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/controller/PersonController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonRegisterRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonRegisterRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonSearchRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonSearchRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonUpdateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/models/dto/PersonUpdateRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/models/enums/PersonStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/models/enums/PersonStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/persistence/entity/Person.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/persistence/entity/Person.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/persistence/repository/PersonRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/persistence/repository/PersonRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/persistence/specification/PersonSpecification.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/persistence/specification/PersonSpecification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/service/PersonService.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/java/com/herculanoleo/spring/me/sample/service/PersonService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/test/java/com/herculanoleo/spring/me/sample/ApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/test/java/com/herculanoleo/spring/me/sample/ApplicationTests.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum-sample-jpa/src/test/java/com/herculanoleo/spring/me/sample/controller/PersonControllerE2ETest.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-sample-parent/spring-mapper-enum-sample-jpa/src/test/java/com/herculanoleo/spring/me/sample/controller/PersonControllerE2ETest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum/src/main/java/com/herculanoleo/spring/me/Empty.java" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum/src/main/java/com/herculanoleo/spring/me/Empty.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spring-mapper-enum/src/main/resources/META-INF/services/javax.annotation.processing.Processor" beforeDir="false" afterPath="$PROJECT_DIR$/spring-mapper-enum-parent/spring-mapper-enum/src/main/resources/META-INF/services/javax.annotation.processing.Processor" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="33u0MzYTg6dnX4nO4q9buKcy8RP" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.parent [clean].executor": "Run",
+    "Maven.parent [package].executor": "Run",
+    "Maven.parent [test].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "New/updated database configurations found",
+    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "feature/upgrade-version-dep",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "advanced.settings",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="Spring Boot.Application">
+    <configuration name="Application (1)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="spring-mapper-enum-sample-jpa" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.herculanoleo.spring.me.sample.Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="spring-mapper-enum-sample-feign" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.herculanoleo.spring.me.sample.Application" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a131e4a5-3373-4498-a319-b8451b9109b2" name="Changes" comment="" />
+      <created>1760151605275</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1760151605275</updated>
+      <workItem from="1760151606493" duration="357000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat(dependencies): upgrade nas dependencias e reorganizacao dos pom.xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(dependencies): upgrade nas dependencias e reorganizacao dos pom.xml" />
+  </component>
+</project>
