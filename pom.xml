@@ -3,16 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.herculanoleo</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>spring-mapper-enum</artifactId>
     <version>1.2.0</version>
     <packaging>pom</packaging>
 
-    <name>parent</name>
+    <name>spring-mapper-enum</name>
     <description>this pom was included to fix intellij import</description>
 
     <modules>
-        <module>spring-mapper-enum-parent</module>
-        <module>spring-mapper-enum-sample-parent</module>
+        <module>mapper-enum</module>
+        <module>samples</module>
     </modules>
 
 </project>
