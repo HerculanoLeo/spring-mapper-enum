@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.0</version>
+        <version>3.2.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -26,7 +26,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
+        <spring-cloud.version>2023.0.0</spring-cloud.version>
         <common-lang3.version>3.19.0</common-lang3.version>
         <mockito.version>5.20.0</mockito.version>
         <jacoco.version>0.8.13</jacoco.version>
