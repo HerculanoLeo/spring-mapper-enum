@@ -205,8 +205,8 @@
         </repository>
 
         <repository>
-            <id>github-mapper-enum</id>
-            <url>https://maven.pkg.github.com/herculanoleo/mapper-enum</url>
+            <id>github-spring-mapper-enum</id>
+            <url>https://maven.pkg.github.com/herculanoleo/spring-mapper-enum</url>
         </repository>
     </repositories>
 
