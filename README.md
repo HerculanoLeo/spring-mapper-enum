@@ -24,9 +24,9 @@ A Spring Boot library that simplifies handling of enums with custom string repre
 ## Requirements
 
 *   Java 17+
-*   Spring Boot 3.2.x to 3.4.x (*The new versions were not tested)
+*   Spring Boot 4.0.x
 *   Spring MVC
-*   Jackson Databind
+*   Jackson 3 (`tools.jackson`)
 *   **Optional:**
     *   Spring Cloud OpenFeign (for Feign client integration)
     *   Spring Data JPA (for JPA `AttributeConverter` generation)
@@ -55,8 +55,10 @@ To download the dependency using GitHub packages, follow these steps: [Working w
 
 ## Observations
 
-If you're using other libraries that generate classes at build time, such as `hibernate-jpamodelgen` or `lombok`, add an annotationProcessor configuration to the build -> plugins -> plugin section of your `pom.xml`. See the [pom.xml](spring-mapper-enum-sample-jpa/pom.xml)
-in the [spring-mapper-enum-sample-jpa](spring-mapper-enum-sample-jpa) project for an example.
+If you're using other libraries that generate classes at build time, such as `hibernate-processor` or `lombok`, add an annotationProcessor configuration to the build -> plugins -> plugin section of your `pom.xml`. See the [pom.xml](samples/sample-jpa/pom.xml)
+in the [sample-jpa](samples/sample-jpa) module for an example.
+
+When writing integration tests with `TestRestTemplate` on Spring Boot 4, add the test dependencies `spring-boot-starter-webmvc-test` and `spring-boot-starter-restclient`, and annotate the test class with `@AutoConfigureTestRestTemplate`. The [sample-jpa](samples/sample-jpa) module demonstrates this setup.
 
 ```xml
 <plugin>
@@ -68,7 +70,7 @@ in the [spring-mapper-enum-sample-jpa](spring-mapper-enum-sample-jpa) project fo
         <annotationProcessorPaths>
             <path>
                 <groupId>org.hibernate.orm</groupId>
-                <artifactId>hibernate-jpamodelgen</artifactId>
+                <artifactId>hibernate-processor</artifactId>
                 <version>${hibernate.version}</version>
             </path>
             <path>
@@ -124,7 +126,7 @@ To activate the library's features, add the `@EnableMapperEnum` annotation to on
 This will:
 *   Scan for all classes implementing `MapperEnum`.
 *   Register Spring `Formatter`s for each found `MapperEnum` type, enabling automatic conversion in Spring MVC.
-*   Configure Jackson with custom serializers and deserializers for all found `MapperEnum` types.
+*   Register a Jackson module (`mapperEnumModule`) with custom serializers and deserializers for all found `MapperEnum` types (auto-configured by Spring Boot).
 
 ## Usage Scenarios
 
