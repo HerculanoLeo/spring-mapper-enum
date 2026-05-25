@@ -58,7 +58,7 @@ public class GeneratedMapperEnumConverterProcessor extends AbstractProcessor {
     protected void generateConverterForEnum(TypeElement typeElement) {
         try {
             var basePackageName = processingEnv.getElementUtils().getPackageOf(typeElement).toString();
-            var className = typeElement.getSimpleName().toString() + "Converter";
+            var className = typeElement.getSimpleName() + "Converter";
 
             var converterClassName = ClassName.get(AttributeConverter.class.getPackageName(), AttributeConverter.class.getSimpleName());
             var elementClassName = ClassName.get(basePackageName, typeElement.getSimpleName().toString());

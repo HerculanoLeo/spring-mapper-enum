@@ -1,26 +1,24 @@
 package com.herculanoleo.spring.me.converter.json;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.databind.BeanProperty;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.herculanoleo.spring.me.converter.json.MapperEnumJsonDeserializer;
 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.IOException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.databind.BeanProperty;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.type.TypeFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MapperEnumJsonDeserializerTest {
+public class MapperEnumValueDeserializerTest {
 
     private enum MockMapperEnum implements MapperEnum {
         GENERIC_1("G_1"),
@@ -44,38 +42,38 @@ public class MapperEnumJsonDeserializerTest {
         }
     }
 
-    @DisplayName("Should instantiate a MapperEnumJsonDeserializer with MockMapperEnum JsonType and jsonType is not null")
+    @DisplayName("Should instantiate a MapperEnumValueDeserializer with MockMapperEnum JsonType and jsonType is not null")
     @Test
     public void constructorTest() {
-        var expectedJsonType = TypeFactory.defaultInstance().constructType(MockMapperEnum.class);
+        var expectedJsonType = TypeFactory.createDefaultInstance().constructType(MockMapperEnum.class);
         BeanProperty beanProperty = mock(BeanProperty.class);
         when(beanProperty.getType()).thenReturn(expectedJsonType);
 
-        var jsonDeserializer = new MapperEnumJsonDeserializer();
+        var jsonDeserializer = new MapperEnumValueDeserializer();
         jsonDeserializer.createContextual(mock(DeserializationContext.class), beanProperty);
 
         assertEquals(expectedJsonType, jsonDeserializer.jsonType);
     }
 
-    @DisplayName("Should instantiate a MapperEnumJsonDeserializer with default constructor and jsonType is null")
+    @DisplayName("Should instantiate a MapperEnumValueDeserializer with default constructor and jsonType is null")
     @Test
     public void defaultConstructorTest() {
-        var jsonDeserializer = new MapperEnumJsonDeserializer();
+        var jsonDeserializer = new MapperEnumValueDeserializer();
         assertNull(jsonDeserializer.jsonType);
     }
 
     @DisplayName("Should return the Enum of the value that came from Json")
     @Test
-    public void deserializeTest() throws IOException {
-        var expectedJsonType = TypeFactory.defaultInstance().constructType(MockMapperEnum.class);
+    public void deserializeTest() {
+        var expectedJsonType = TypeFactory.createDefaultInstance().constructType(MockMapperEnum.class);
         BeanProperty beanProperty = mock(BeanProperty.class);
         when(beanProperty.getType()).thenReturn(expectedJsonType);
 
-        var jsonDeserializer = new MapperEnumJsonDeserializer();
+        var jsonDeserializer = new MapperEnumValueDeserializer();
         jsonDeserializer.createContextual(mock(DeserializationContext.class), beanProperty);
 
         var jsonParser = Mockito.mock(JsonParser.class);
-        when(jsonParser.getText()).thenReturn(MockMapperEnum.GENERIC_1.getValue());
+        when(jsonParser.getString()).thenReturn(MockMapperEnum.GENERIC_1.getValue());
         var context = Mockito.mock(DeserializationContext.class);
 
         var result = jsonDeserializer.deserialize(jsonParser, context);
@@ -83,31 +81,31 @@ public class MapperEnumJsonDeserializerTest {
         assertEquals(MockMapperEnum.GENERIC_1, result);
     }
 
-    @DisplayName("Should throw IOException when failed to get text from JsonParser")
+    @DisplayName("Should throw JacksonException when failed to get string from JsonParser")
     @Test
-    public void deserializeIOExceptionTest() throws IOException {
-        var expectedJsonType = TypeFactory.defaultInstance().constructType(MockMapperEnum.class);
+    public void deserializeJacksonExceptionTest() {
+        var expectedJsonType = TypeFactory.createDefaultInstance().constructType(MockMapperEnum.class);
         BeanProperty beanProperty = mock(BeanProperty.class);
         when(beanProperty.getType()).thenReturn(expectedJsonType);
 
-        var jsonDeserializer = new MapperEnumJsonDeserializer();
+        var jsonDeserializer = new MapperEnumValueDeserializer();
         jsonDeserializer.createContextual(mock(DeserializationContext.class), beanProperty);
 
         var jsonParser = mock(JsonParser.class);
-        when(jsonParser.getText()).thenThrow(IOException.class);
+        when(jsonParser.getString()).thenThrow(JacksonException.class);
         var context = Mockito.mock(DeserializationContext.class);
 
-        assertThrows(IOException.class, () -> jsonDeserializer.deserialize(jsonParser, context));
+        assertThrows(JacksonException.class, () -> jsonDeserializer.deserialize(jsonParser, context));
     }
 
     @DisplayName("Should return null value when currentToken is a VALUE_NULL")
     @Test
-    public void deserializeVALUE_NULLTest() throws IOException {
-        var jsonType = TypeFactory.defaultInstance().constructType(MockMapperEnum.class);
+    public void deserializeVALUE_NULLTest() {
+        var jsonType = TypeFactory.createDefaultInstance().constructType(MockMapperEnum.class);
         BeanProperty beanProperty = mock(BeanProperty.class);
         when(beanProperty.getType()).thenReturn(jsonType);
 
-        var jsonDeserializer = new MapperEnumJsonDeserializer();
+        var jsonDeserializer = new MapperEnumValueDeserializer();
         jsonDeserializer.createContextual(mock(DeserializationContext.class), beanProperty);
 
         var jsonParser = Mockito.mock(JsonParser.class);
@@ -120,21 +118,19 @@ public class MapperEnumJsonDeserializerTest {
         assertNull(result);
     }
 
-
-    @DisplayName("Should return a instance of MapperEnumJsonDeserializer with MockMapperEnum JsonType")
+    @DisplayName("Should return a instance of MapperEnumValueDeserializer with MockMapperEnum JsonType")
     @Test
     public void createContextualTest() {
-        var expectedJsonType = TypeFactory.defaultInstance().constructType(MockMapperEnum.class);
+        var expectedJsonType = TypeFactory.createDefaultInstance().constructType(MockMapperEnum.class);
         var contextMock = Mockito.mock(DeserializationContext.class);
         var propertyMock = Mockito.mock(BeanProperty.class);
 
         when(propertyMock.getType()).thenReturn(expectedJsonType);
 
-        var jsonDeserializer = new MapperEnumJsonDeserializer().createContextual(contextMock, propertyMock);
+        var jsonDeserializer = new MapperEnumValueDeserializer().createContextual(contextMock, propertyMock);
 
-        assertInstanceOf(MapperEnumJsonDeserializer.class, jsonDeserializer);
-        assertEquals(expectedJsonType, ((MapperEnumJsonDeserializer) jsonDeserializer).jsonType);
+        assertInstanceOf(MapperEnumValueDeserializer.class, jsonDeserializer);
+        assertEquals(expectedJsonType, ((MapperEnumValueDeserializer) jsonDeserializer).jsonType);
     }
-
 
 }

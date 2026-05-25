@@ -1,7 +1,5 @@
 package com.herculanoleo.spring.me.sample.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.herculanoleo.spring.me.sample.models.dto.PersonRegisterRequest;
 import com.herculanoleo.spring.me.sample.models.dto.PersonUpdateRequest;
 import com.herculanoleo.spring.me.sample.persistence.entity.Person;
@@ -14,9 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@AutoConfigureTestRestTemplate
 public class PersonControllerE2ETest {
 
     @Autowired
@@ -122,7 +122,7 @@ public class PersonControllerE2ETest {
 
     @DisplayName("Should execute a get to /person/{id} and validate json response")
     @Test
-    public void findById_validate_json_response_test() throws JsonProcessingException {
+    public void findById_validate_json_response_test() throws JacksonException {
         var responseEntity = restTemplate.getForEntity("/person/" + johnDoeEntity.getId(), String.class);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -132,10 +132,10 @@ public class PersonControllerE2ETest {
         assertNotNull(body);
 
         var jsonNode = objectMapper.readTree(body);
-        assertEquals(johnDoeEntity.getId().toString(), jsonNode.get("id").asText());
-        assertEquals("John Doe", jsonNode.get("name").asText());
-        assertEquals("2000-01-01", jsonNode.get("birthdate").asText());
-        assertEquals("A", jsonNode.get("status").asText());
+        assertEquals(johnDoeEntity.getId().toString(), jsonNode.get("id").asString());
+        assertEquals("John Doe", jsonNode.get("name").asString());
+        assertEquals("2000-01-01", jsonNode.get("birthdate").asString());
+        assertEquals("A", jsonNode.get("status").asString());
     }
 
     @DisplayName("Should execute a post to /person and register to database")
@@ -159,13 +159,7 @@ public class PersonControllerE2ETest {
         Object[] object = (Object[]) nativeQuery.getSingleResult();
 
         assertEquals("James Doe", object[1]);
-        assertEquals(
-                LocalDate.of(2001, 1, 1),
-                Instant
-                        .ofEpochMilli(((Date) object[2]).getTime())
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-        );
+        assertEquals(LocalDate.of(2001, 1, 1), birthdateFromNativeQuery(object[2]));
         assertEquals(PersonStatus.ACTIVE.getValue(), object[3]);
     }
 
@@ -183,13 +177,7 @@ public class PersonControllerE2ETest {
         Object[] object = (Object[]) nativeQuery.getSingleResult();
 
         assertEquals("John Doe - Edit", object[1]);
-        assertEquals(
-                LocalDate.of(2001, 1, 1),
-                Instant
-                        .ofEpochMilli(((Date) object[2]).getTime())
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-        );
+        assertEquals(LocalDate.of(2001, 1, 1), birthdateFromNativeQuery(object[2]));
         assertEquals(PersonStatus.ACTIVE.getValue(), object[3]);
     }
 
@@ -204,13 +192,7 @@ public class PersonControllerE2ETest {
         Object[] object = (Object[]) nativeQuery.getSingleResult();
 
         assertEquals("Zoe Doe", object[1]);
-        assertEquals(
-                LocalDate.of(2001, 1, 1),
-                Instant
-                        .ofEpochMilli(((Date) object[2]).getTime())
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-        );
+        assertEquals(LocalDate.of(2001, 1, 1), birthdateFromNativeQuery(object[2]));
         assertEquals(PersonStatus.ACTIVE.getValue(), object[3]);
     }
 
@@ -237,13 +219,7 @@ public class PersonControllerE2ETest {
         Object[] object = (Object[]) nativeQuery.getSingleResult();
 
         assertEquals("John Doe", object[1]);
-        assertEquals(
-                LocalDate.of(2000, 1, 1),
-                Instant
-                        .ofEpochMilli(((Date) object[2]).getTime())
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
-        );
+        assertEquals(LocalDate.of(2000, 1, 1), birthdateFromNativeQuery(object[2]));
         assertEquals(PersonStatus.INACTIVE.getValue(), object[3]);
     }
 
@@ -257,6 +233,16 @@ public class PersonControllerE2ETest {
                 Void.class
         );
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+    }
+
+    private LocalDate birthdateFromNativeQuery(Object value) {
+        if (value instanceof LocalDate localDate) {
+            return localDate;
+        }
+        if (value instanceof Date date) {
+            return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDate();
+        }
+        throw new IllegalArgumentException("Unexpected birthdate type: " + value.getClass());
     }
 
 }
