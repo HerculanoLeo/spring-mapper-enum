@@ -46,7 +46,7 @@ public class StartConfiguration {
                 .addDeserializer(MapperEnum.class, new MapperEnumValueDeserializer());
         for (var clazz : classes) {
             module = module
-                    .addSerializer(clazz, new MapperEnumValueSerializer())
+                    .addSerializer(clazz, MapperEnumValueSerializer.INSTANCE)
                     .addDeserializer((Class<MapperEnum>) clazz, new MapperEnumValueDeserializer());
         }
 

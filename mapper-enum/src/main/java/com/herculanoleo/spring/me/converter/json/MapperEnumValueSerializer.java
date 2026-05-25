@@ -7,6 +7,9 @@ import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.ValueSerializer;
 
 public class MapperEnumValueSerializer extends ValueSerializer<MapperEnum> {
+
+    public static final MapperEnumValueSerializer INSTANCE = new MapperEnumValueSerializer();
+
     @Override
     public void serialize(MapperEnum value, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
         gen.writeString(value.getValue());

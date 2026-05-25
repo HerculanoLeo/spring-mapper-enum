@@ -10,15 +10,22 @@ import tools.jackson.databind.ValueDeserializer;
 
 public class MapperEnumValueDeserializer extends ValueDeserializer<MapperEnum> {
 
-    protected JavaType jsonType;
+    protected final JavaType jsonType;
 
     public MapperEnumValueDeserializer() {
+        this.jsonType = null;
+    }
+
+    private MapperEnumValueDeserializer(JavaType jsonType) {
+        this.jsonType = jsonType;
     }
 
     @Override
     public ValueDeserializer<?> createContextual(DeserializationContext context, BeanProperty property) {
-        this.jsonType = property.getType();
-        return this;
+        if (property == null) {
+            return this;
+        }
+        return new MapperEnumValueDeserializer(property.getType());
     }
 
     @Override
@@ -32,6 +39,5 @@ public class MapperEnumValueDeserializer extends ValueDeserializer<MapperEnum> {
 
         return MapperEnum.fromValue(jsonParser.getString(), subclass);
     }
-
 
 }

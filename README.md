@@ -161,9 +161,10 @@ The above JSON will be deserialized back to a `TaskDto` with `status` as `TaskSt
 
 To enable `MapperEnum` support for Feign clients, especially when using `@SpringQueryMap`:
 
-1.  Add `@EnableFeignMapperEnum` to your Spring Boot application configuration:
+1.  Add `@EnableMapperEnum` to scan enums and register MVC/JSON converters.
+2.  Add `@EnableFeignMapperEnum` to register the custom `MapperEnumQueryMapEncoder` and Feign formatters.
 
-2.  This registers a custom `MapperEnumQueryMapEncoder`.
+`@EnableFeignMapperEnum` requires `@EnableMapperEnum` on the same application (it reuses the shared `MapperResourceLoader` bean).
 
 ### 4. JPA Persistence
 

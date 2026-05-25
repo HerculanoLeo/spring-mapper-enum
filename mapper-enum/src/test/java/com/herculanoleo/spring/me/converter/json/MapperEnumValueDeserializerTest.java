@@ -49,8 +49,8 @@ public class MapperEnumValueDeserializerTest {
         BeanProperty beanProperty = mock(BeanProperty.class);
         when(beanProperty.getType()).thenReturn(expectedJsonType);
 
-        var jsonDeserializer = new MapperEnumValueDeserializer();
-        jsonDeserializer.createContextual(mock(DeserializationContext.class), beanProperty);
+        var jsonDeserializer = (MapperEnumValueDeserializer) new MapperEnumValueDeserializer()
+                .createContextual(mock(DeserializationContext.class), beanProperty);
 
         assertEquals(expectedJsonType, jsonDeserializer.jsonType);
     }
@@ -69,8 +69,8 @@ public class MapperEnumValueDeserializerTest {
         BeanProperty beanProperty = mock(BeanProperty.class);
         when(beanProperty.getType()).thenReturn(expectedJsonType);
 
-        var jsonDeserializer = new MapperEnumValueDeserializer();
-        jsonDeserializer.createContextual(mock(DeserializationContext.class), beanProperty);
+        var jsonDeserializer = (MapperEnumValueDeserializer) new MapperEnumValueDeserializer()
+                .createContextual(mock(DeserializationContext.class), beanProperty);
 
         var jsonParser = Mockito.mock(JsonParser.class);
         when(jsonParser.getString()).thenReturn(MockMapperEnum.GENERIC_1.getValue());
@@ -88,8 +88,8 @@ public class MapperEnumValueDeserializerTest {
         BeanProperty beanProperty = mock(BeanProperty.class);
         when(beanProperty.getType()).thenReturn(expectedJsonType);
 
-        var jsonDeserializer = new MapperEnumValueDeserializer();
-        jsonDeserializer.createContextual(mock(DeserializationContext.class), beanProperty);
+        var jsonDeserializer = (MapperEnumValueDeserializer) new MapperEnumValueDeserializer()
+                .createContextual(mock(DeserializationContext.class), beanProperty);
 
         var jsonParser = mock(JsonParser.class);
         when(jsonParser.getString()).thenThrow(JacksonException.class);
@@ -105,8 +105,8 @@ public class MapperEnumValueDeserializerTest {
         BeanProperty beanProperty = mock(BeanProperty.class);
         when(beanProperty.getType()).thenReturn(jsonType);
 
-        var jsonDeserializer = new MapperEnumValueDeserializer();
-        jsonDeserializer.createContextual(mock(DeserializationContext.class), beanProperty);
+        var jsonDeserializer = (MapperEnumValueDeserializer) new MapperEnumValueDeserializer()
+                .createContextual(mock(DeserializationContext.class), beanProperty);
 
         var jsonParser = Mockito.mock(JsonParser.class);
         when(jsonParser.currentToken()).thenReturn(JsonToken.VALUE_NULL);
@@ -118,7 +118,7 @@ public class MapperEnumValueDeserializerTest {
         assertNull(result);
     }
 
-    @DisplayName("Should return a instance of MapperEnumValueDeserializer with MockMapperEnum JsonType")
+    @DisplayName("Should return a new MapperEnumValueDeserializer instance with MockMapperEnum JsonType")
     @Test
     public void createContextualTest() {
         var expectedJsonType = TypeFactory.createDefaultInstance().constructType(MockMapperEnum.class);
@@ -127,10 +127,12 @@ public class MapperEnumValueDeserializerTest {
 
         when(propertyMock.getType()).thenReturn(expectedJsonType);
 
-        var jsonDeserializer = new MapperEnumValueDeserializer().createContextual(contextMock, propertyMock);
+        var original = new MapperEnumValueDeserializer();
+        var jsonDeserializer = (MapperEnumValueDeserializer) original.createContextual(contextMock, propertyMock);
 
-        assertInstanceOf(MapperEnumValueDeserializer.class, jsonDeserializer);
-        assertEquals(expectedJsonType, ((MapperEnumValueDeserializer) jsonDeserializer).jsonType);
+        assertNotSame(original, jsonDeserializer);
+        assertEquals(expectedJsonType, jsonDeserializer.jsonType);
+        assertNull(original.jsonType);
     }
 
 }

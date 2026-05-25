@@ -1,7 +1,6 @@
 package com.herculanoleo.spring.me.configuration;
 
 import com.herculanoleo.spring.me.models.annotation.EnableMapperEnum;
-import com.herculanoleo.spring.me.models.dto.WrongMapperMock;
 import com.herculanoleo.spring.me.models.enums.MapperEnumMock;
 import org.example.test.MockStarter;
 import org.example.test.enums.OutsidePackageMapperMock;
@@ -21,6 +20,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -37,18 +37,24 @@ public class MapperResourceLoaderTest {
     @DisplayName("Should call findCandidateComponent and set classes when call setup")
     @Test
     public void setupTest() throws ClassNotFoundException {
-        var expectResult = Set.of(MapperEnumMock.class);
-        doReturn(expectResult).when(mapperResourceLoader).findCandidateComponent();
+        var expectResult = List.of(MapperEnumMock.class);
+        doReturn(Set.of("com.herculanoleo.spring.me")).when(mapperResourceLoader).getBasePackages();
+        doReturn(expectResult).when(mapperResourceLoader).findCandidateComponent(anyCollection());
 
         mapperResourceLoader.setup();
 
         assertEquals(expectResult, mapperResourceLoader.getClasses());
+        assertEquals(1, mapperResourceLoader.serializableEnumFormatter().size());
     }
 
-    @DisplayName("Should create formatters for only enums that implement MapperEnum interfaces")
+    @DisplayName("Should create formatters only for enum types discovered during setup")
     @Test
-    public void serializableEnumFormatterTest() {
-        mapperResourceLoader.classes = Set.of(MapperEnumMock.class, WrongMapperMock.class);
+    public void serializableEnumFormatterTest() throws ClassNotFoundException {
+        doReturn(Set.of("com.herculanoleo.spring.me")).when(mapperResourceLoader).getBasePackages();
+        doReturn(List.of(MapperEnumMock.class)).when(mapperResourceLoader).findCandidateComponent(anyCollection());
+
+        mapperResourceLoader.setup();
+
         var formattersMap = mapperResourceLoader.serializableEnumFormatter();
 
         assertEquals(1, formattersMap.size());
@@ -56,32 +62,30 @@ public class MapperResourceLoaderTest {
                 && Objects.nonNull(entry.getValue())));
     }
 
-    @DisplayName("Should not create formatters for class that implement MapperEnum interfaces")
+    @DisplayName("Should not create formatters when no enums were discovered")
     @Test
-    public void serializableEnumFormatterEmptyListTest() {
-        mapperResourceLoader.classes = Set.of(WrongMapperMock.class);
-        var formattersMap = mapperResourceLoader.serializableEnumFormatter();
-        assertEquals(0, formattersMap.size());
+    public void serializableEnumFormatterEmptyListTest() throws ClassNotFoundException {
+        doReturn(Set.of("com.herculanoleo.spring.me")).when(mapperResourceLoader).getBasePackages();
+        doReturn(List.of()).when(mapperResourceLoader).findCandidateComponent(anyCollection());
+
+        mapperResourceLoader.setup();
+
+        assertEquals(0, mapperResourceLoader.serializableEnumFormatter().size());
     }
 
-    @DisplayName("Should list all classes that implement MapperEnum")
+    @DisplayName("Should list only enum classes that implement MapperEnum")
     @Test
     public void findCandidateComponent() throws ClassNotFoundException {
-        doReturn(
-                Set.of(
-                        "org.example.test",
-                        "com.herculanoleo.spring.me",
-                        "org.example.test.enums"
-                )
-        )
-                .when(mapperResourceLoader)
-                .getBasePackages();
-        var classes = this.mapperResourceLoader.findCandidateComponent();
-        assertTrue(classes.containsAll(List.of(
-                WrongMapperMock.class,
-                MapperEnumMock.class,
-                OutsidePackageMapperMock.class
-        )));
+        when(applicationContext.getClassLoader()).thenReturn(getClass().getClassLoader());
+        var basePackages = Set.of(
+                "org.example.test",
+                "com.herculanoleo.spring.me",
+                "org.example.test.enums"
+        );
+        var classes = this.mapperResourceLoader.findCandidateComponent(basePackages);
+        assertTrue(classes.contains(MapperEnumMock.class));
+        assertTrue(classes.contains(OutsidePackageMapperMock.class));
+        assertTrue(classes.stream().allMatch(Class::isEnum));
     }
 
     @DisplayName("Should list all base packages from the annotated class with EnableMapperEnum annotation")

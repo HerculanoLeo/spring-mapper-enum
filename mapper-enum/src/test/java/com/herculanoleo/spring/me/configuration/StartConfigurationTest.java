@@ -75,7 +75,7 @@ public class StartConfigurationTest {
 
             verify(simpleModule).addDeserializer(eq(MapperEnum.class), any(MapperEnumValueDeserializer.class));
             verify(simpleModule).addDeserializer(eq((Class<MapperEnum>) expectedClazz), any(MapperEnumValueDeserializer.class));
-            verify(simpleModule).addSerializer(eq(MapperEnumMock.class), any(MapperEnumValueSerializer.class));
+            verify(simpleModule).addSerializer(eq(MapperEnumMock.class), eq(MapperEnumValueSerializer.INSTANCE));
             assertSame(simpleModule, module);
         }
     }

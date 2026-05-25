@@ -17,8 +17,10 @@ import javax.tools.Diagnostic;
 import java.util.Set;
 
 @AutoService(Processor.class)
-@SupportedAnnotationTypes("*")
+@SupportedAnnotationTypes(GeneratedMapperEnumConverterProcessor.MAPPER_ENUM_DB_CONVERTER)
 public class GeneratedMapperEnumConverterProcessor extends AbstractProcessor {
+
+    static final String MAPPER_ENUM_DB_CONVERTER = "com.herculanoleo.spring.me.models.annotation.MapperEnumDBConverter";
 
     private boolean isRunnable = false;
 
@@ -52,7 +54,7 @@ public class GeneratedMapperEnumConverterProcessor extends AbstractProcessor {
             }
         }
 
-        return true;
+        return false;
     }
 
     protected void generateConverterForEnum(TypeElement typeElement) {
