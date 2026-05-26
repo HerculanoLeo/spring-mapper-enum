@@ -30,7 +30,7 @@ public class MapperEnumValueDeserializer extends ValueDeserializer<MapperEnum> {
 
     @Override
     public MapperEnum deserialize(JsonParser jsonParser, DeserializationContext context) {
-        if (jsonParser.currentToken() == JsonToken.VALUE_NULL) {
+        if (jsonParser.currentToken() == JsonToken.VALUE_NULL || null == this.jsonType) {
             return null;
         }
 

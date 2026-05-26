@@ -8,6 +8,8 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
 import org.springframework.format.support.FormattingConversionService;
 import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.ValueSerializer;
 import tools.jackson.databind.module.SimpleModule;
 
 import java.util.HashSet;
@@ -36,7 +38,6 @@ public class StartConfiguration {
     }
 
     @Bean
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public JacksonModule mapperEnumModule() {
         var module = new SimpleModule();
 
@@ -53,7 +54,7 @@ public class StartConfiguration {
     private SimpleModule registerContributor(SimpleModule module, MapperEnumTypeContributor contributor) {
         Class<? extends MapperEnum> clazz = contributor.enumType();
         return module
-                .addSerializer(clazz, (tools.jackson.databind.ValueSerializer) contributor.serializer())
-                .addDeserializer(clazz, (tools.jackson.databind.ValueDeserializer) contributor.deserializer());
+                .addSerializer(clazz, (ValueSerializer) contributor.serializer())
+                .addDeserializer(clazz, (ValueDeserializer) contributor.deserializer());
     }
 }

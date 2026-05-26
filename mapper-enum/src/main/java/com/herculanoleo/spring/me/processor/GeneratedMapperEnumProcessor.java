@@ -168,8 +168,7 @@ public class GeneratedMapperEnumProcessor extends AbstractProcessor {
                         .addStatement("return null")
                         .endControlFlow()
                         .addStatement(
-                                "return ($T) $T.fromValue(jsonParser.getString(), $T.class)",
-                                enumClass,
+                                "return $T.fromValue(jsonParser.getString(), $T.class)",
                                 MAPPER_ENUM,
                                 enumClass
                         )
