@@ -1,9 +1,9 @@
 package com.herculanoleo.spring.me.configuration;
 
 import com.herculanoleo.spring.me.converter.json.MapperEnumValueDeserializer;
-import com.herculanoleo.spring.me.converter.json.MapperEnumValueSerializer;
 import com.herculanoleo.spring.me.converter.web.MapperEnumFormatterAnnotationFactory;
 import com.herculanoleo.spring.me.models.enums.MapperEnum;
+import com.herculanoleo.spring.me.spi.MapperEnumTypeContributor;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
 import org.springframework.format.support.FormattingConversionService;
@@ -36,20 +36,24 @@ public class StartConfiguration {
     }
 
     @Bean
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public JacksonModule mapperEnumModule() {
-        var classes = mapperResourceLoader.getClasses();
-
         var module = new SimpleModule();
 
-        module = module
-                .addDeserializer(MapperEnum.class, new MapperEnumValueDeserializer());
-        for (var clazz : classes) {
-            module = module
-                    .addSerializer(clazz, MapperEnumValueSerializer.INSTANCE)
-                    .addDeserializer((Class<MapperEnum>) clazz, new MapperEnumValueDeserializer());
+        module = module.addDeserializer(MapperEnum.class, new MapperEnumValueDeserializer());
+
+        for (var contributor : mapperResourceLoader.getContributors()) {
+            module = registerContributor(module, contributor);
         }
 
         return module;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private SimpleModule registerContributor(SimpleModule module, MapperEnumTypeContributor contributor) {
+        Class<? extends MapperEnum> clazz = contributor.enumType();
+        return module
+                .addSerializer(clazz, (tools.jackson.databind.ValueSerializer) contributor.serializer())
+                .addDeserializer(clazz, (tools.jackson.databind.ValueDeserializer) contributor.deserializer());
     }
 }

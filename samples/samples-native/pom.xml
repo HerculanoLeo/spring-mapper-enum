@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.herculanoleo</groupId>
+        <artifactId>samples</artifactId>
+        <version>2.0.0</version>
+    </parent>
+
+    <artifactId>samples-native</artifactId>
+    <packaging>pom</packaging>
+    <name>samples-native</name>
+    <description>GraalVM native sample applications (mirrors samples-jvm)</description>
+
+    <modules>
+        <module>sample-jpa</module>
+        <module>sample-feign</module>
+    </modules>
+
+</project>

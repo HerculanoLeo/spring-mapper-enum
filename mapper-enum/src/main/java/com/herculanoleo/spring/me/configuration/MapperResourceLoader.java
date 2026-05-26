@@ -1,14 +1,11 @@
 package com.herculanoleo.spring.me.configuration;
 
 import com.herculanoleo.spring.me.converter.web.MapperEnumFormatterFactory;
-import com.herculanoleo.spring.me.models.annotation.EnableMapperEnum;
 import com.herculanoleo.spring.me.models.enums.MapperEnum;
+import com.herculanoleo.spring.me.spi.MapperEnumTypeContributor;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.format.Formatter;
 
 import java.util.*;
@@ -19,40 +16,48 @@ public class MapperResourceLoader {
 
     private final MapperEnumFormatterFactory formatterFactory = new MapperEnumFormatterFactory();
 
-    private final ApplicationContext applicationContext;
-
-    private final ClassPathScanningCandidateComponentProvider scanner;
-
     protected Collection<Class<? extends MapperEnum>> classes = List.of();
 
     private Map<Class<? extends MapperEnum>, Formatter<? extends MapperEnum>> formattersCache = Map.of();
 
-    public MapperResourceLoader(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-        this.scanner = new ClassPathScanningCandidateComponentProvider(false);
-        this.scanner.addIncludeFilter(new AssignableTypeFilter(MapperEnum.class));
+    private List<MapperEnumTypeContributor> contributors = List.of();
+
+    @PostConstruct
+    public void setup() {
+        this.contributors = loadContributors();
+        this.classes = contributors.stream()
+                .map(MapperEnumTypeContributor::enumType)
+                .toList();
+        this.formattersCache = buildFormatters(this.classes);
+
+        if (classes.isEmpty()) {
+            log.warn(
+                    "No MapperEnum types were registered. Annotate enums with @MapperEnumType or @MapperEnumDBConverter "
+                            + "and ensure the annotation processor runs at compile time."
+            );
+        }
     }
 
     public Collection<Class<? extends MapperEnum>> getClasses() {
         return classes;
     }
 
-    @PostConstruct
-    public void setup() throws ClassNotFoundException {
-        var basePackages = getBasePackages();
-        if (basePackages.isEmpty()) {
-            log.warn("No @EnableMapperEnum bean found or no base packages configured; MapperEnum scanning was skipped");
-            this.classes = List.of();
-            this.formattersCache = Map.of();
-            return;
-        }
-
-        this.classes = findCandidateComponent(basePackages);
-        this.formattersCache = buildFormatters(this.classes);
+    public List<MapperEnumTypeContributor> getContributors() {
+        return contributors;
     }
 
     public Map<Class<? extends MapperEnum>, Formatter<? extends MapperEnum>> serializableEnumFormatter() {
         return formattersCache;
+    }
+
+    private List<MapperEnumTypeContributor> loadContributors() {
+        var loaded = ServiceLoader.load(MapperEnumTypeContributor.class);
+        var contributors = new ArrayList<MapperEnumTypeContributor>();
+        for (var contributor : loaded) {
+            contributors.add(contributor);
+        }
+        contributors.sort(Comparator.comparing(c -> c.enumType().getName()));
+        return List.copyOf(contributors);
     }
 
     private Map<Class<? extends MapperEnum>, Formatter<? extends MapperEnum>> buildFormatters(
@@ -64,44 +69,4 @@ public class MapperResourceLoader {
         }
         return Map.copyOf(formatters);
     }
-
-    protected Collection<Class<? extends MapperEnum>> findCandidateComponent(Collection<String> basePackages)
-            throws ClassNotFoundException {
-        var components = new HashSet<Class<? extends MapperEnum>>();
-
-        for (var basePackage : basePackages) {
-            var beanDefinitions = scanner.findCandidateComponents(basePackage);
-            for (var beanDefinition : beanDefinitions) {
-                var classLoader = applicationContext.getClassLoader();
-                var clazz = Class.forName(beanDefinition.getBeanClassName(), false, classLoader);
-                if (clazz.isEnum() && MapperEnum.class.isAssignableFrom(clazz)) {
-                    components.add(clazz.asSubclass(MapperEnum.class));
-                }
-            }
-        }
-
-        return List.copyOf(components);
-    }
-
-    protected Collection<String> getBasePackages() {
-        var basePackages = new HashSet<String>();
-
-        var entryBean = applicationContext.getBeansWithAnnotation(EnableMapperEnum.class)
-                .entrySet()
-                .stream()
-                .findFirst()
-                .orElse(null);
-
-        if (Objects.nonNull(entryBean)) {
-            EnableMapperEnum serializableEnum = Objects.requireNonNull(
-                    applicationContext.findAnnotationOnBean(entryBean.getKey(), EnableMapperEnum.class)
-            );
-            basePackages.add(entryBean.getValue().getClass().getPackageName());
-            basePackages.addAll(Arrays.asList(serializableEnum.value()));
-            basePackages.addAll(Arrays.asList(serializableEnum.basePackages()));
-        }
-
-        return basePackages;
-    }
-
 }

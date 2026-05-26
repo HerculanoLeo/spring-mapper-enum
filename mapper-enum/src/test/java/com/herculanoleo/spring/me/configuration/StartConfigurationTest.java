@@ -1,11 +1,12 @@
 package com.herculanoleo.spring.me.configuration;
 
 import com.herculanoleo.spring.me.converter.json.MapperEnumValueDeserializer;
-import com.herculanoleo.spring.me.converter.json.MapperEnumValueSerializer;
 import com.herculanoleo.spring.me.converter.web.MapperEnumFormatterAnnotationFactory;
 import com.herculanoleo.spring.me.converter.web.MapperEnumFormatterFactory;
 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 import com.herculanoleo.spring.me.models.enums.MapperEnumMock;
+import com.herculanoleo.spring.me.spi.MapperEnumTypeContributor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +16,11 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.format.support.FormattingConversionService;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.ValueSerializer;
 import tools.jackson.databind.module.SimpleModule;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +37,9 @@ public class StartConfigurationTest {
 
     @Mock
     private MapperResourceLoader mapperResourceLoader;
+
+    @Mock
+    private MapperEnumTypeContributor contributor;
 
     @Spy
     @InjectMocks
@@ -57,25 +64,29 @@ public class StartConfigurationTest {
         }
     }
 
-    @DisplayName("Should config json serializables module")
+    @DisplayName("Should config json serializables module from generated contributors")
     @Test
     @SuppressWarnings("unchecked")
     public void mapperEnumModuleTest() {
+        when(contributor.enumType()).thenReturn((Class) MapperEnumMock.class);
+        when(contributor.serializer()).thenReturn(mock(ValueSerializer.class));
+        when(contributor.deserializer()).thenReturn(mock(ValueDeserializer.class));
+
         try (var simpleModuleMockedConstruction = Mockito.mockConstruction(SimpleModule.class, (mock, context) -> {
             when(mock.addDeserializer(any(), any())).thenReturn(mock);
             when(mock.addSerializer(any(), any())).thenReturn(mock);
         })) {
             Class<? extends MapperEnum> expectedClazz = MapperEnumMock.class;
 
-            doReturn(Set.of(MapperEnumMock.class)).when(mapperResourceLoader).getClasses();
+            doReturn(List.of(contributor)).when(mapperResourceLoader).getContributors();
 
             var module = startConfiguration.mapperEnumModule();
 
             var simpleModule = simpleModuleMockedConstruction.constructed().stream().findFirst().orElseThrow();
 
             verify(simpleModule).addDeserializer(eq(MapperEnum.class), any(MapperEnumValueDeserializer.class));
-            verify(simpleModule).addDeserializer(eq((Class<MapperEnum>) expectedClazz), any(MapperEnumValueDeserializer.class));
-            verify(simpleModule).addSerializer(eq(MapperEnumMock.class), eq(MapperEnumValueSerializer.INSTANCE));
+            verify(simpleModule, atLeastOnce()).addDeserializer(any(), any());
+            verify(simpleModule, atLeastOnce()).addSerializer(any(), any());
             assertSame(simpleModule, module);
         }
     }

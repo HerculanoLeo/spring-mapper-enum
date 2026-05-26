@@ -16,8 +16,8 @@
     <name>samples</name>
 
     <modules>
-        <module>sample-feign</module>
-        <module>sample-jpa</module>
+        <module>samples-jvm</module>
+        <module>samples-native</module>
     </modules>
 
     <properties>
