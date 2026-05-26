@@ -27,6 +27,23 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Annotation processor that runs at compile time for enums annotated with
+ * {@link MapperEnumType} and/or {@link MapperEnumDBConverter}.
+ *
+ * <p>For each qualifying enum that implements {@link MapperEnum}, generates:
+ * <ul>
+ *   <li>{@code *JsonSerializer} and {@code *JsonDeserializer} in the enum's {@code .json} package</li>
+ *   <li>{@code *MapperEnumContributor} implementing {@link MapperEnumTypeContributor}</li>
+ *   <li>{@code META-INF/services/com.herculanoleo.spring.me.spi.MapperEnumTypeContributor} entries</li>
+ *   <li>Optionally, a JPA {@code *Converter} with {@code autoApply = true} when
+ *       {@link MapperEnumDBConverter} is present and JPA is on the classpath</li>
+ * </ul>
+ *
+ * <p>Add {@code spring-mapper-enum} to {@code annotationProcessorPaths} in the consuming project's
+ * {@code maven-compiler-plugin} (or Gradle equivalent). The processor is registered automatically
+ * via {@link com.google.auto.service.AutoService}.
+ */
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({
         GeneratedMapperEnumProcessor.MAPPER_ENUM_TYPE,
@@ -34,7 +51,10 @@ import java.util.stream.Stream;
 })
 public class GeneratedMapperEnumProcessor extends AbstractProcessor {
 
+    /** Fully qualified name of {@link MapperEnumType}. */
     static final String MAPPER_ENUM_TYPE = "com.herculanoleo.spring.me.models.annotation.MapperEnumType";
+
+    /** Fully qualified name of {@link MapperEnumDBConverter}. */
     static final String MAPPER_ENUM_DB_CONVERTER = "com.herculanoleo.spring.me.models.annotation.MapperEnumDBConverter";
     private static final String CONTRIBUTOR_SERVICE_RESOURCE =
             "META-INF/services/com.herculanoleo.spring.me.spi.MapperEnumTypeContributor";

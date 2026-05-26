@@ -9,6 +9,12 @@ import org.springframework.format.Printer;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * {@link AnnotationFormatterFactory} for {@link MapperEnumFormat}.
+ *
+ * <p>Provides {@link MapperEnumFormatter} instances for fields and parameters annotated with
+ * {@link MapperEnumFormat}, limited to the set of compile-time registered enum types.
+ */
 @SuppressWarnings("unchecked")
 public class MapperEnumFormatterAnnotationFactory implements AnnotationFormatterFactory<MapperEnumFormat> {
 
@@ -16,6 +22,9 @@ public class MapperEnumFormatterAnnotationFactory implements AnnotationFormatter
 
     private final ConcurrentHashMap<Class<? extends MapperEnum>, MapperEnumFormatter<?>> formatters = new ConcurrentHashMap<>();
 
+    /**
+     * @param types compile-time registered enum types (from {@link com.herculanoleo.spring.me.configuration.MapperResourceLoader#getClasses()})
+     */
     public MapperEnumFormatterAnnotationFactory(Set<Class<?>> types) {
         this.types = types;
     }

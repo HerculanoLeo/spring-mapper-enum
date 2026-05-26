@@ -10,6 +10,19 @@ import org.springframework.format.Formatter;
 
 import java.util.*;
 
+/**
+ * Loads compile-time registered {@link com.herculanoleo.spring.me.models.enums.MapperEnum} types
+ * and builds shared formatter instances.
+ *
+ * <p>Contributors are discovered with {@link java.util.ServiceLoader} from
+ * {@code META-INF/services/com.herculanoleo.spring.me.spi.MapperEnumTypeContributor}, populated
+ * by the annotation processor for each {@link com.herculanoleo.spring.me.models.annotation.MapperEnumType}
+ * enum. This avoids runtime classpath scanning and supports GraalVM native images when the
+ * application is built with the processor enabled.
+ *
+ * <p>Imported as a Spring bean by {@link com.herculanoleo.spring.me.models.annotation.EnableMapperEnum}
+ * and shared with {@link FeignStartConfiguration}.
+ */
 public class MapperResourceLoader {
 
     private static final Logger log = LoggerFactory.getLogger(MapperResourceLoader.class);
@@ -26,7 +39,7 @@ public class MapperResourceLoader {
     public void setup() {
         this.contributors = loadContributors();
         this.classes = contributors.stream()
-                .map(MapperEnumTypeContributor::enumType)
+                .<Class<? extends MapperEnum>>map(MapperEnumTypeContributor::enumType)
                 .toList();
         this.formattersCache = buildFormatters(this.classes);
 
@@ -38,14 +51,29 @@ public class MapperResourceLoader {
         }
     }
 
+    /**
+     * Returns all registered enum types, sorted by class name.
+     *
+     * @return immutable view of registered {@link MapperEnum} classes
+     */
     public Collection<Class<? extends MapperEnum>> getClasses() {
         return classes;
     }
 
+    /**
+     * Returns all {@link MapperEnumTypeContributor} instances loaded from {@code META-INF/services}.
+     *
+     * @return immutable list of contributors
+     */
     public List<MapperEnumTypeContributor> getContributors() {
         return contributors;
     }
 
+    /**
+     * Returns a formatter per registered enum type for Spring MVC and Feign.
+     *
+     * @return immutable map of enum class to formatter
+     */
     public Map<Class<? extends MapperEnum>, Formatter<? extends MapperEnum>> serializableEnumFormatter() {
         return formattersCache;
     }

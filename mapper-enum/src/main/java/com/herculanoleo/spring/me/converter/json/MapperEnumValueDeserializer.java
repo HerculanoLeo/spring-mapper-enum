@@ -8,6 +8,15 @@ import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.JavaType;
 import tools.jackson.databind.ValueDeserializer;
 
+/**
+ * Fallback Jackson deserializer for properties declared as {@link MapperEnum} without a concrete enum type.
+ *
+ * <p>When used as a contextual deserializer (via {@link #createContextual}), resolves the concrete
+ * enum type from the bean property and delegates to {@link MapperEnum#fromValue(String, Class)}.
+ *
+ * <p>For compile-time registered enums, prefer the generated type-specific deserializers registered
+ * through {@link com.herculanoleo.spring.me.spi.MapperEnumTypeContributor}.
+ */
 public class MapperEnumValueDeserializer extends ValueDeserializer<MapperEnum> {
 
     protected final JavaType jsonType;

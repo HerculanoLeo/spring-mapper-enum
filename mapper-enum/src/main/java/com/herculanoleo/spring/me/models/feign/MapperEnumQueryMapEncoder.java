@@ -10,9 +10,21 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/*
-   This class is a simple copy of the FieldQueryMapEncoder class from Feign library with the addition that if the field is a SerializableEnum
-   value, call MapperEnum.getValue() method instead of the default Object.toString()
+/**
+ * Feign {@link QueryMapEncoder} that encodes {@link MapperEnum} object fields using
+ * {@link MapperEnum#getValue()} instead of {@link Object#toString()}.
+ *
+ * <p>Based on Feign's {@code FieldQueryMapEncoder}, with {@link MapperEnum} awareness for
+ * {@code @SpringQueryMap} DTOs. Registered as the {@code serializableEnumQueryMapEncoder} bean by
+ * {@link com.herculanoleo.spring.me.configuration.FeignStartConfiguration} when
+ * {@link com.herculanoleo.spring.me.models.annotation.EnableFeignMapperEnum} is present.
+ *
+ * <p><strong>Example</strong>
+ * <pre>{@code
+ * public record SearchQuery(MapperEnumMock status) {}
+ *
+ * // Encodes status as its getValue() string in the query map, not the enum name.
+ * }</pre>
  */
 public class MapperEnumQueryMapEncoder implements QueryMapEncoder {
 

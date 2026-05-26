@@ -14,6 +14,15 @@ import tools.jackson.databind.module.SimpleModule;
 
 import java.util.HashSet;
 
+/**
+ * Spring configuration imported by {@link com.herculanoleo.spring.me.models.annotation.EnableMapperEnum}.
+ *
+ * <p>At startup, registers MVC formatters for every compile-time registered
+ * {@link com.herculanoleo.spring.me.models.enums.MapperEnum} and exposes the
+ * {@code mapperEnumModule} Jackson module bean with generated serializers and deserializers.
+ *
+ * <p>Do not import this class directly; use {@link com.herculanoleo.spring.me.models.annotation.EnableMapperEnum}.
+ */
 public class StartConfiguration {
 
     private final FormattingConversionService conversionService;
@@ -25,6 +34,10 @@ public class StartConfiguration {
         this.mapperResourceLoader = mapperResourceLoader;
     }
 
+    /**
+     * Registers {@link com.herculanoleo.spring.me.converter.web.MapperEnumFormatter}s on the
+     * application {@link org.springframework.format.support.FormattingConversionService}.
+     */
     @PostConstruct
     public void setup() {
         var formatters = mapperResourceLoader.serializableEnumFormatter();
@@ -37,6 +50,13 @@ public class StartConfiguration {
         );
     }
 
+    /**
+     * Jackson module with a fallback {@link com.herculanoleo.spring.me.converter.json.MapperEnumValueDeserializer}
+     * for {@link com.herculanoleo.spring.me.models.enums.MapperEnum} and per-type serializers/deserializers
+     * from {@link com.herculanoleo.spring.me.spi.MapperEnumTypeContributor} instances.
+     *
+     * @return the module registered automatically by Spring Boot Jackson auto-configuration
+     */
     @Bean
     public JacksonModule mapperEnumModule() {
         var module = new SimpleModule();

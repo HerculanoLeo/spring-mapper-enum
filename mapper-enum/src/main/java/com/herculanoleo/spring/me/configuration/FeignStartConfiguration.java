@@ -9,6 +9,15 @@ import org.springframework.format.FormatterRegistry;
 
 import java.util.HashSet;
 
+/**
+ * Feign configuration imported by {@link com.herculanoleo.spring.me.models.annotation.EnableFeignMapperEnum}.
+ *
+ * <p>Registers the same {@link com.herculanoleo.spring.me.converter.web.MapperEnumFormatter}s as
+ * {@link StartConfiguration} on Feign's formatter registry and provides a
+ * {@link com.herculanoleo.spring.me.models.feign.MapperEnumQueryMapEncoder} bean.
+ *
+ * <p>Do not import this class directly; use {@link com.herculanoleo.spring.me.models.annotation.EnableFeignMapperEnum}.
+ */
 public class FeignStartConfiguration implements FeignFormatterRegistrar {
 
     private final MapperResourceLoader mapperResourceLoader;
@@ -26,6 +35,12 @@ public class FeignStartConfiguration implements FeignFormatterRegistrar {
         );
     }
 
+    /**
+     * Feign {@link QueryMapEncoder} that writes {@link com.herculanoleo.spring.me.models.enums.MapperEnum}
+     * fields using {@link com.herculanoleo.spring.me.models.enums.MapperEnum#getValue()}.
+     *
+     * @return the query map encoder bean
+     */
     @Bean
     public QueryMapEncoder serializableEnumQueryMapEncoder() {
         return new MapperEnumQueryMapEncoder();
