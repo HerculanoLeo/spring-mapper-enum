@@ -4,7 +4,13 @@
     <file url="file://$PROJECT_DIR$/mapper-enum/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/samples/samples-jvm/sample-feign/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/samples/samples-jvm/sample-jpa/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/samples/samples-jvm/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/samples/samples-jvm/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/samples/samples-native/sample-feign/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/samples/samples-native/sample-jpa/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/samples/samples-native/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/samples/samples-native/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/samples/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/samples/src/main/resources" charset="UTF-8" />
   </component>
 </project>

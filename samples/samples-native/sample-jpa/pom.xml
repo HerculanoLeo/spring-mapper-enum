@@ -9,8 +9,8 @@
         <version>2.0.0</version>
     </parent>
 
-    <artifactId>spring-mapper-enum-sample-native-jpa</artifactId>
-    <name>spring-mapper-enum-sample-native-jpa</name>
+    <artifactId>spring-mapper-enum-sample-jpa-native</artifactId>
+    <name>spring-mapper-enum-sample-jpa-native</name>
     <description>JPA sample for GraalVM native image (mirror of samples-jvm/sample-jpa)</description>
 
     <dependencies>
