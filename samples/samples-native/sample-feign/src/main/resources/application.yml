@@ -3,4 +3,4 @@ server:
 
 spring:
   application:
-    name: spring-mapper-enum-sample-native-feign
+    name: spring-mapper-enum-sample-feign-native

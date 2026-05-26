@@ -3,4 +3,4 @@ server:
 
 spring:
   application:
-    name: spring-mapper-enum-sample-jvm-feign
+    name: spring-mapper-enum-sample-feign-jvm

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: spring-mapper-enum-sample-native-jpa
+    name: spring-mapper-enum-sample-jpa-native
   datasource:
     url: jdbc:h2:mem:db
     username: test
