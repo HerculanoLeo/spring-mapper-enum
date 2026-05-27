@@ -25,7 +25,7 @@ A Spring Boot library that simplifies handling of enums with custom string repre
 ## Requirements
 
 *   Java 17+
-*   Spring Boot 4.0.x (**v2.x.x** line — this branch)
+*   Spring Boot 4.0.x
 *   Spring MVC
 *   Jackson 3 (`tools.jackson`)
 *   **Optional:**
