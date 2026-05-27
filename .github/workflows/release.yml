@@ -39,5 +39,5 @@ jobs:
               "password": "${{ secrets.GITHUB_TOKEN }}"
             }]
 
-      - name: Deploy
-        run: mvn -B -Pgithub deploy -DskipTests
+      - name: Deploy mapper-enum to GitHub Packages
+        run: mvn -B -Pgithub deploy -DskipTests -pl mapper-enum
