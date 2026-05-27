@@ -25,12 +25,25 @@ A Spring Boot library that simplifies handling of enums with custom string repre
 ## Requirements
 
 *   Java 17+
-*   Spring Boot 4.0.x
+*   Spring Boot 4.0.x (**v2.x.x** line — this branch)
 *   Spring MVC
 *   Jackson 3 (`tools.jackson`)
 *   **Optional:**
     *   Spring Cloud OpenFeign (for Feign client integration)
     *   Spring Data JPA (for JPA `AttributeConverter` generation)
+
+## Version compatibility
+
+This repository maintains two release lines:
+
+| Line | Branch | Spring Boot | Spring Native |
+|------|--------|-------------|---------------|
+| **v2** | `v2.x.x` (default) | 4.0.x | Supported (compile-time registration, no runtime classpath scanning) |
+| **v1** | [`v1.x.x`](https://github.com/HerculanoLeo/spring-mapper-enum/tree/v1.x.x) | 3.2.x – 3.5.x | **Not supported** |
+
+**Spring Boot 3.2 through 3.5:** use the **v1** line — check out the [`v1.x.x`](https://github.com/HerculanoLeo/spring-mapper-enum/tree/v1.x.x) branch and depend on a `1.x.y` release from that line. It targets Jackson 2 and the Spring Boot 3 ecosystem.
+
+**Spring Native / GraalVM on v1:** the v1 line is **not directly compatible** with Spring Native. Enum discovery relies on **reflection** at runtime, which does not fit GraalVM native image constraints without substantial manual reachability configuration. If you need native images, migrate to **v2** on Spring Boot 4.
 
 ## Installation
 
@@ -182,7 +195,9 @@ To persist `MapperEnum` instances as their string values in a database using JPA
 
 ## GraalVM / Spring Native
 
-Because enum types are discovered through generated `MapperEnumTypeContributor` classes and `META-INF/services` entries (not runtime classpath scanning), the library is compatible with native image builds as long as:
+> **v1.x.x (Spring Boot 3.2–3.5):** not supported — see [Version compatibility](#version-compatibility). The v1 line uses reflection for enum discovery and is not suitable for Spring Native out of the box.
+
+On the **v2** line, enum types are discovered through generated `MapperEnumTypeContributor` classes and `META-INF/services` entries (not runtime classpath scanning), so the library is compatible with native image builds as long as:
 
 *   Every enum is annotated with `@MapperEnumType` (and `@MapperEnumDBConverter` when using JPA).
 *   The annotation processor runs in the application build.
