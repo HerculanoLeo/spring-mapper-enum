@@ -10,14 +10,25 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/*
-   This class is a simple copy of the FieldQueryMapEncoder class from Feign library with the addition that if the field is a SerializableEnum
-   value, call MapperEnum.getValue() method instead of the default Object.toString()
+/**
+ * Feign {@link QueryMapEncoder} that encodes {@link MapperEnum} object fields using
+ * {@link MapperEnum#getValue()} instead of {@link Object#toString()}.
+ *
+ * <p>Based on Feign's {@code FieldQueryMapEncoder}, with {@link MapperEnum} awareness for
+ * {@code @SpringQueryMap} DTOs. Registered as the {@code serializableEnumQueryMapEncoder} bean by
+ * {@link com.herculanoleo.spring.me.configuration.FeignStartConfiguration} when
+ * {@link com.herculanoleo.spring.me.models.annotation.EnableFeignMapperEnum} is present.
+ *
+ * <p><strong>Example</strong>
+ * <pre>{@code
+ * public record SearchQuery(MapperEnumMock status) {}
+ *
+ * // Encodes status as its getValue() string in the query map, not the enum name.
+ * }</pre>
  */
 public class MapperEnumQueryMapEncoder implements QueryMapEncoder {
 
-    private final Map<Class<?>, ObjectParamMetadata> classToMetadata =
-            new ConcurrentHashMap<>();
+    private final Map<Class<?>, ObjectParamMetadata> classToMetadata = new ConcurrentHashMap<>();
 
     @Override
     public Map<String, Object> encode(Object object) throws EncodeException {
@@ -30,8 +41,7 @@ public class MapperEnumQueryMapEncoder implements QueryMapEncoder {
         return metadata.objectFields.stream()
                 .map(field -> this.FieldValuePair(object, field))
                 .filter(fieldObjectPair -> fieldObjectPair.right.isPresent())
-                .collect(Collectors.toMap(this::fieldName,
-                        fieldObjectPair -> fieldObjectPair.right.get()));
+                .collect(Collectors.toMap(this::fieldName, fieldObjectPair -> fieldObjectPair.right.get()));
     }
 
     private String fieldName(Pair<Field, Optional<Object>> pair) {
@@ -55,7 +65,9 @@ public class MapperEnumQueryMapEncoder implements QueryMapEncoder {
         }
     }
 
-    private record ObjectParamMetadata(List<Field> objectFields) {
+    private static class ObjectParamMetadata {
+
+        private final List<Field> objectFields;
 
         private ObjectParamMetadata(List<Field> objectFields) {
             this.objectFields = Collections.unmodifiableList(objectFields);
@@ -64,19 +76,29 @@ public class MapperEnumQueryMapEncoder implements QueryMapEncoder {
         private static ObjectParamMetadata parseObjectType(Class<?> type) {
             List<Field> allFields = new ArrayList<>();
 
-            for (Class<?> currentClass = type; currentClass != null; currentClass =
-                    currentClass.getSuperclass()) {
+            for (Class<?> currentClass = type;
+                 currentClass != null;
+                 currentClass = currentClass.getSuperclass()) {
                 Collections.addAll(allFields, currentClass.getDeclaredFields());
             }
 
-            return new ObjectParamMetadata(allFields.stream()
-                    .filter(field -> !field.isSynthetic())
-                    .peek(field -> field.setAccessible(true))
-                    .collect(Collectors.toList()));
+            return new ObjectParamMetadata(
+                    allFields.stream()
+                            .filter(field -> !field.isSynthetic())
+                            .peek(field -> field.setAccessible(true))
+                            .collect(Collectors.toList()));
         }
     }
 
-    private record Pair<T, U>(T left, U right) {
+    private static class Pair<T, U> {
+        private Pair(T left, U right) {
+            this.right = right;
+            this.left = left;
+        }
+
+        public final T left;
+        public final U right;
+
         public static <T, U> Pair<T, U> pair(T left, U right) {
             return new Pair<>(left, right);
         }

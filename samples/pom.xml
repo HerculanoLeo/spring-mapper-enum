@@ -5,19 +5,19 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
+        <version>4.0.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.herculanoleo</groupId>
     <artifactId>samples</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.0</version>
+    <version>2.0.0</version>
     <name>samples</name>
 
     <modules>
-        <module>sample-feign</module>
-        <module>sample-jpa</module>
+        <module>samples-jvm</module>
+        <module>samples-native</module>
     </modules>
 
     <properties>
@@ -26,8 +26,8 @@
         <maven.compiler.target>17</maven.compiler.target>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-cloud.version>2023.0.0</spring-cloud.version>
-        <common-lang3.version>3.19.0</common-lang3.version>
+        <spring-cloud.version>2025.1.1</spring-cloud.version>
+        <common-lang3.version>3.20.0</common-lang3.version>
         <mockito.version>5.20.0</mockito.version>
         <jacoco.version>0.8.13</jacoco.version>
     </properties>
