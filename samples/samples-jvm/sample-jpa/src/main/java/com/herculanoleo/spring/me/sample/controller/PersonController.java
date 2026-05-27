@@ -6,6 +6,7 @@ import com.herculanoleo.spring.me.sample.models.dto.PersonUpdateRequest;
 import com.herculanoleo.spring.me.sample.persistence.entity.Person;
 import com.herculanoleo.spring.me.sample.service.PersonService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("person")
 @RequiredArgsConstructor
+@RegisterReflectionForBinding({
+        PersonSearchRequest.class,
+        PersonRegisterRequest.class,
+        PersonUpdateRequest.class
+})
 public class PersonController {
 
     private final PersonService service;

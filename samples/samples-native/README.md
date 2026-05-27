@@ -17,6 +17,11 @@ Native modules run the same integration tests on the JVM:
 mvn -pl samples/samples-native -am clean test
 ```
 
+## Native image notes
+
+- Request DTO **records** used as query parameters (`@ModelAttribute`) need reflection at image build time. The JPA sample uses `@RegisterReflectionForBinding` on `PersonController` for `PersonSearchRequest` and related records.
+- Rebuild the native binary after changing bindings or DTOs: `mvn -Pnative native:compile`.
+
 ## Native executable
 
 Requires [GraalVM](https://www.graalvm.org/downloads/) with `native-image`.

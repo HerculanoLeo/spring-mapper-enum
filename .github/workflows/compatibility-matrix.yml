@@ -1,0 +1,70 @@
+# Integration tests against multiple Spring Boot versions before a release.
+# Parent POM version must be literal in Maven, so CI bumps it with versions-maven-plugin.
+name: Compatibility matrix
+
+on:
+  workflow_call:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+concurrency:
+  group: compatibility-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Add new Boot minors here. Pair spring-cloud with Boot per Spring Cloud release train.
+        include:
+          - spring-boot: '4.0.6'
+            spring-cloud: '2025.1.1'
+          # - spring-boot: '4.0.7'
+          #   spring-cloud: '2025.1.1'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Align Spring Boot parent (mapper-enum + samples)
+        run: |
+          BOOT="${{ matrix.spring-boot }}"
+          mvn -B -N org.codehaus.mojo:versions-maven-plugin:2.18.0:update-parent \
+            -pl mapper-enum \
+            -DparentVersion="$BOOT" \
+            -DgenerateBackupPoms=false
+          mvn -B -N org.codehaus.mojo:versions-maven-plugin:2.18.0:update-parent \
+            -pl samples \
+            -DparentVersion="$BOOT" \
+            -DgenerateBackupPoms=false
+
+      - name: Align Spring Cloud BOM (samples)
+        run: |
+          mvn -B -N org.codehaus.mojo:versions-maven-plugin:2.18.0:set-property \
+            -pl samples \
+            -Dproperty=spring-cloud.version \
+            -DnewVersion="${{ matrix.spring-cloud }}" \
+            -DgenerateBackupPoms=false
+
+      - name: Integration test (full reactor)
+        run: mvn -B clean test
+
+      - name: Summary
+        if: success()
+        run: |
+          {
+            echo "### Passed"
+            echo "- Spring Boot \`${{ matrix.spring-boot }}\`"
+            echo "- Spring Cloud \`${{ matrix.spring-cloud }}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
