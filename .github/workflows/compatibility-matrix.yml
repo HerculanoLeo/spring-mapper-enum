@@ -40,18 +40,20 @@ jobs:
       - name: Align Spring Boot parent (mapper-enum + samples)
         run: |
           BOOT="${{ matrix.spring-boot }}"
-          mvn -B -N org.codehaus.mojo:versions-maven-plugin:2.18.0:update-parent \
+          mvn -B org.codehaus.mojo:versions-maven-plugin:2.18.0:update-parent \
             -pl mapper-enum \
             -DparentVersion="$BOOT" \
+            -DskipResolution=true \
             -DgenerateBackupPoms=false
-          mvn -B -N org.codehaus.mojo:versions-maven-plugin:2.18.0:update-parent \
+          mvn -B org.codehaus.mojo:versions-maven-plugin:2.18.0:update-parent \
             -pl samples \
             -DparentVersion="$BOOT" \
+            -DskipResolution=true \
             -DgenerateBackupPoms=false
 
       - name: Align Spring Cloud BOM (samples)
         run: |
-          mvn -B -N org.codehaus.mojo:versions-maven-plugin:2.18.0:set-property \
+          mvn -B org.codehaus.mojo:versions-maven-plugin:2.18.0:set-property \
             -pl samples \
             -Dproperty=spring-cloud.version \
             -DnewVersion="${{ matrix.spring-cloud }}" \
