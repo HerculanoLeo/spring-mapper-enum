@@ -11,11 +11,16 @@
     </option>
     <option name="enabledProfiles">
       <list>
+        <option value="nexus3" />
+      </list>
+    </option>
+    <option name="disabledProfiles">
+      <list>
         <option value="github" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="graalvm-ce-25" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="temurin-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
