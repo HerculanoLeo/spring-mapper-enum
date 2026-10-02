@@ -10,7 +10,7 @@ A Spring Boot library that simplifies handling of enums with custom string repre
 *   **Jackson Integration:** Automatic JSON serialization to string values and deserialization from string values for `MapperEnum` instances.
 *   **Feign Client Support:** Includes a custom Feign `QueryMapEncoder` for correct `MapperEnum` encoding in query parameters when using `@SpringQueryMap`.
 *   **JPA Persistence:** Annotation-based generation of JPA `AttributeConverter`s (`@Converter(autoApply = true)`) for persisting `MapperEnum`s as their string values in the database.
-*   **Centralized Enum Contract:** The `MapperEnum` interface provides a standard way to define custom string values, default/generic enum instances, and custom error messages.
+*   **Centralized Enum Contract:** The `MapperEnum` interface provides a standard way to define custom string values, default/generic enum instances, and custom error messages. Use `MapperEnum.fromValue(...)` for strict resolution (generic or exception), or `MapperEnum.findByValue(...)` for an `Optional` lookup without exceptions.
 *   **Easy Setup:** Quickly enable features with `@EnableMapperEnum` for core Spring/Jackson and `@EnableFeignMapperEnum` for Feign integration.
 *   **Compile-Time Registration:** Enums are registered at build time via `@MapperEnumType` (no runtime classpath scanning), which keeps startup predictable and works well with GraalVM native images.
 *   **Reduced Boilerplate:** Minimizes the need for manual converter and serializer/deserializer implementations.

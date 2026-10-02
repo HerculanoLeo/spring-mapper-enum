@@ -6,6 +6,7 @@ import com.herculanoleo.spring.me.models.exception.InvalidGenericEnumException;
 import com.herculanoleo.spring.me.models.exception.InvalidValueEnumException;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Contract for Java enums that map to a custom string value in HTTP, JSON, Feign, and the database.
@@ -37,6 +38,7 @@ import java.util.Arrays;
  *
  * @see com.herculanoleo.spring.me.models.annotation.EnableMapperEnum
  * @see MapperEnum#fromValue(String, Class)
+ * @see MapperEnum#findByValue(String, Class)
  */
 public interface MapperEnum {
 
@@ -119,6 +121,27 @@ public interface MapperEnum {
         }
 
         return opEnum.orElse(clazz.cast(generic));
+    }
+
+    /**
+     * Looks up an enum constant by mapped value or {@link Enum#name()} without throwing
+     * and without using {@link #getGeneric()}.
+     *
+     * <p>Returns {@link Optional#empty()} when {@code value} is {@code null} or no constant matches.
+     * Prefer this over {@link #fromValue(String, Class)} when absence is an expected outcome.
+     *
+     * @param value the incoming string, or {@code null}
+     * @param clazz the target enum class
+     * @param <E>   the enum type
+     * @return the matching constant, or empty if none
+     */
+    static <E extends MapperEnum> Optional<E> findByValue(String value, Class<E> clazz) {
+        if (value == null) {
+            return Optional.empty();
+        }
+        return Arrays.stream(clazz.getEnumConstants())
+                .filter(e -> value.equals(e.getValue()) || value.equals(((Enum<?>) e).name()))
+                .findFirst();
     }
 
 }

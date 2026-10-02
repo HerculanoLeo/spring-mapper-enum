@@ -12,11 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
@@ -51,10 +47,14 @@ import java.util.stream.Stream;
 })
 public class GeneratedMapperEnumProcessor extends AbstractProcessor {
 
-    /** Fully qualified name of {@link MapperEnumType}. */
+    /**
+     * Fully qualified name of {@link MapperEnumType}.
+     */
     static final String MAPPER_ENUM_TYPE = "com.herculanoleo.spring.me.models.annotation.MapperEnumType";
 
-    /** Fully qualified name of {@link MapperEnumDBConverter}. */
+    /**
+     * Fully qualified name of {@link MapperEnumDBConverter}.
+     */
     static final String MAPPER_ENUM_DB_CONVERTER = "com.herculanoleo.spring.me.models.annotation.MapperEnumDBConverter";
     private static final String CONTRIBUTOR_SERVICE_RESOURCE =
             "META-INF/services/com.herculanoleo.spring.me.spi.MapperEnumTypeContributor";
@@ -184,7 +184,11 @@ public class GeneratedMapperEnumProcessor extends AbstractProcessor {
                         .returns(enumClass)
                         .addParameter(JSON_PARSER, "jsonParser")
                         .addParameter(DESERIALIZATION_CONTEXT, "context")
-                        .beginControlFlow("if (jsonParser.currentToken() == $T.VALUE_NULL)", JSON_TOKEN)
+                        .beginControlFlow(
+                                "if (jsonParser.currentToken() == $T.VALUE_NULL || $T.isBlank(jsonParser.getString()))",
+                                JSON_TOKEN,
+                                StringUtils.class
+                        )
                         .addStatement("return null")
                         .endControlFlow()
                         .addStatement(
