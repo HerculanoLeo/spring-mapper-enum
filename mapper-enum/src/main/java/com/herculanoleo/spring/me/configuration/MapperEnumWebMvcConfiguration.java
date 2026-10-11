@@ -3,6 +3,7 @@ package com.herculanoleo.spring.me.configuration;
 import com.herculanoleo.spring.me.converter.web.MapperEnumPropertyEditor;
 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -28,7 +29,7 @@ public class MapperEnumWebMvcConfiguration implements WebMvcConfigurer {
     }
 
     @Override
-    public void addFormatters(org.springframework.format.FormatterRegistry registry) {
+    public void addFormatters(FormatterRegistry registry) {
         MapperEnumRegistrations.register(mapperResourceLoader, registry);
     }
 

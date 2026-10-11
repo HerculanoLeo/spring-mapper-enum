@@ -32,7 +32,7 @@ public @interface MappedEnum {
      *
      * <p>Empty means there is no annotation-level fallback. Unknown values then use
      * {@link com.herculanoleo.spring.me.models.enums.MapperEnum#getGeneric()} when that method is
-     * overridden, and otherwise fail with {@link IllegalArgumentException}.
+     * overridden and otherwise fail with {@link IllegalArgumentException}.
      *
      * <p>A fallback maps unknown input onto a real constant. Do not set this for enums used in
      * authorization.
