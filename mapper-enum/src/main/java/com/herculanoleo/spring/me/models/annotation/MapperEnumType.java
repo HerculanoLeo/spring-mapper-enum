@@ -23,9 +23,23 @@ import java.lang.annotation.Target;
  *
  * @see com.herculanoleo.spring.me.models.annotation.EnableMapperEnum
  * @see MapperEnumDBConverter
- * @see com.herculanoleo.spring.me.processor.GeneratedMapperEnumProcessor
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MapperEnumType {
+
+    /**
+     * Enum constant name used when an incoming value does not match {@code getValue()}.
+     *
+     * <p>Empty means there is no annotation-level fallback. Unknown values then use
+     * {@link com.herculanoleo.spring.me.models.enums.MapperEnum#getGeneric()} when that method is
+     * overridden, and otherwise fail with {@link IllegalArgumentException}.
+     *
+     * <p>A fallback maps unknown input onto a real constant. Do not set this for enums used in
+     * authorization.
+     *
+     * @return the simple name of a constant of this enum, or an empty string
+     */
+    String fallback() default "";
+
 }

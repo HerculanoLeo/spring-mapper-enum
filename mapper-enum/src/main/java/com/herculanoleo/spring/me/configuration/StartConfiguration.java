@@ -1,53 +1,29 @@
 package com.herculanoleo.spring.me.configuration;
 
 import com.herculanoleo.spring.me.converter.json.MapperEnumValueDeserializer;
-import com.herculanoleo.spring.me.converter.web.MapperEnumFormatterAnnotationFactory;
 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 import com.herculanoleo.spring.me.spi.MapperEnumTypeContributor;
-import jakarta.annotation.PostConstruct;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
-import org.springframework.format.support.FormattingConversionService;
 import tools.jackson.databind.JacksonModule;
 import tools.jackson.databind.ValueDeserializer;
 import tools.jackson.databind.ValueSerializer;
 import tools.jackson.databind.module.SimpleModule;
 
-import java.util.HashSet;
-
 /**
- * Spring configuration imported by {@link com.herculanoleo.spring.me.models.annotation.EnableMapperEnum}.
+ * Spring configuration imported by {@link com.herculanoleo.spring.me.models.annotation.EnableMapperEnum}
+ * and by auto-configuration.
  *
- * <p>At startup, registers MVC formatters for every compile-time registered
- * {@link com.herculanoleo.spring.me.models.enums.MapperEnum} and exposes the
- * {@code mapperEnumModule} Jackson module bean with generated serializers and deserializers.
- *
- * <p>Do not import this class directly; use {@link com.herculanoleo.spring.me.models.annotation.EnableMapperEnum}.
+ * <p>Exposes the {@code mapperEnumModule} Jackson module. Servlet and reactive formatters live in
+ * their own configuration classes, so a Jackson and JPA application can start without MVC.
  */
+@ConditionalOnClass(JacksonModule.class)
 public class StartConfiguration {
-
-    private final FormattingConversionService conversionService;
 
     private final MapperResourceLoader mapperResourceLoader;
 
-    public StartConfiguration(FormattingConversionService conversionService, MapperResourceLoader mapperResourceLoader) {
-        this.conversionService = conversionService;
+    public StartConfiguration(MapperResourceLoader mapperResourceLoader) {
         this.mapperResourceLoader = mapperResourceLoader;
-    }
-
-    /**
-     * Registers {@link com.herculanoleo.spring.me.converter.web.MapperEnumFormatter}s on the
-     * application {@link org.springframework.format.support.FormattingConversionService}.
-     */
-    @PostConstruct
-    public void setup() {
-        var formatters = mapperResourceLoader.serializableEnumFormatter();
-        formatters.forEach(conversionService::addFormatterForFieldType);
-
-        var classes = mapperResourceLoader.getClasses();
-
-        conversionService.addFormatterForFieldAnnotation(
-                new MapperEnumFormatterAnnotationFactory(new HashSet<>(classes))
-        );
     }
 
     /**

@@ -26,13 +26,10 @@
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
         <spring-cloud.version>2025.1.1</spring-cloud.version>
-        <common-lang3.version>3.20.0</common-lang3.version>
-        <persistence-api.version>3.2.0</persistence-api.version>
-        <javapoet-palantir.version>0.15.0</javapoet-palantir.version>
         <lombok.version>1.18.46</lombok.version>
         <mockito.version>5.20.0</mockito.version>
         <jacoco.version>0.8.13</jacoco.version>
-        <auto-service.version>1.1.1</auto-service.version>
+        <springdoc.version>3.0.1</springdoc.version>
     </properties>
 
     <dependencyManagement>
@@ -55,10 +52,10 @@
         </dependency>
 
         <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>${persistence-api.version}</version>
-            <scope>compile</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -69,34 +66,16 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${common-lang3.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.palantir.javapoet</groupId>
-            <artifactId>javapoet</artifactId>
-            <version>${javapoet-palantir.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.auto.service</groupId>
-            <artifactId>auto-service-annotations</artifactId>
-            <version>${auto-service.version}</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-common</artifactId>
+            <version>${springdoc.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- TESTS -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.testing.compile</groupId>
-            <artifactId>compile-testing</artifactId>
-            <version>0.21.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -111,25 +90,16 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>com.google.auto.service</groupId>
-                            <artifactId>auto-service</artifactId>
-                            <version>${auto-service.version}</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -186,6 +156,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
+                <configuration>
+                    <doclint>none</doclint>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

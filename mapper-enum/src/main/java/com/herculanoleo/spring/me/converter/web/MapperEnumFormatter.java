@@ -29,6 +29,9 @@ public class MapperEnumFormatter<E extends MapperEnum> implements Formatter<E> {
 
     @Override
     public E parse(String text, Locale locale) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
         return MapperEnum.fromValue(text, targetType);
     }
 

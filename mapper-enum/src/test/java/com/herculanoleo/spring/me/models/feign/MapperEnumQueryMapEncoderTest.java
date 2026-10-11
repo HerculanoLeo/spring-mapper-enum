@@ -32,11 +32,37 @@ public class MapperEnumQueryMapEncoderTest {
         assertEquals(expectedMap, result);
     }
 
+    @DisplayName("Should skip static and transient properties")
+    @Test
+    public void encodeSkipsStaticAndTransientTest() {
+        var result = queryMapEncoder.encode(new QueryBean("visible"));
+        assertEquals(java.util.Map.of("name", "visible"), result);
+    }
+
     @DisplayName("Should return empty map when pass null value as an argument")
     @Test
     public void encodeNullTest() {
         var result = queryMapEncoder.encode(null);
         assertTrue(result.isEmpty());
+    }
+
+    public static class QueryBean {
+        public static final String SECRET = "hidden";
+        private final transient String skipped;
+        private final String name;
+
+        public QueryBean(String name) {
+            this.name = name;
+            this.skipped = "skipped";
+        }
+
+        public String getSkipped() {
+            return skipped;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
 }

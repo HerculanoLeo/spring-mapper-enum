@@ -45,8 +45,7 @@ public class MapperEnumValueDeserializer extends ValueDeserializer<MapperEnum> {
 
         var clazz = this.jsonType.getRawClass();
         var subclass = clazz.asSubclass(MapperEnum.class);
-
-        return MapperEnum.fromValue(jsonParser.getString(), subclass);
+        return MapperEnumJson.read(jsonParser, context, subclass);
     }
 
 }

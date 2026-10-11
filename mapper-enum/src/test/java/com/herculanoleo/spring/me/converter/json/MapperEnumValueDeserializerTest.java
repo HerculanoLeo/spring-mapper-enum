@@ -10,6 +10,7 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.JsonToken;
 import tools.jackson.databind.BeanProperty;
+import tools.jackson.databind.exc.InvalidFormatException;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.type.TypeFactory;
 
@@ -73,6 +74,7 @@ public class MapperEnumValueDeserializerTest {
                 .createContextual(mock(DeserializationContext.class), beanProperty);
 
         var jsonParser = Mockito.mock(JsonParser.class);
+        when(jsonParser.currentToken()).thenReturn(JsonToken.VALUE_STRING);
         when(jsonParser.getString()).thenReturn(MockMapperEnum.GENERIC_1.getValue());
         var context = Mockito.mock(DeserializationContext.class);
 
@@ -92,6 +94,7 @@ public class MapperEnumValueDeserializerTest {
                 .createContextual(mock(DeserializationContext.class), beanProperty);
 
         var jsonParser = mock(JsonParser.class);
+        when(jsonParser.currentToken()).thenReturn(JsonToken.VALUE_STRING);
         when(jsonParser.getString()).thenThrow(JacksonException.class);
         var context = Mockito.mock(DeserializationContext.class);
 
@@ -116,6 +119,40 @@ public class MapperEnumValueDeserializerTest {
         var result = jsonDeserializer.deserialize(jsonParser, context);
 
         assertNull(result);
+    }
+
+    @DisplayName("Should reject a non-string token")
+    @Test
+    public void deserializeNumberTokenTest() {
+        var jsonType = TypeFactory.createDefaultInstance().constructType(MockMapperEnum.class);
+        BeanProperty beanProperty = mock(BeanProperty.class);
+        when(beanProperty.getType()).thenReturn(jsonType);
+
+        var jsonDeserializer = (MapperEnumValueDeserializer) new MapperEnumValueDeserializer()
+                .createContextual(mock(DeserializationContext.class), beanProperty);
+
+        var jsonParser = Mockito.mock(JsonParser.class);
+        when(jsonParser.currentToken()).thenReturn(JsonToken.VALUE_NUMBER_INT);
+        var context = Mockito.mock(DeserializationContext.class);
+
+        assertThrows(InvalidFormatException.class, () -> jsonDeserializer.deserialize(jsonParser, context));
+    }
+
+    @DisplayName("Should return null when the string is blank")
+    @Test
+    public void deserializeBlankTest() {
+        var jsonType = TypeFactory.createDefaultInstance().constructType(MockMapperEnum.class);
+        BeanProperty beanProperty = mock(BeanProperty.class);
+        when(beanProperty.getType()).thenReturn(jsonType);
+
+        var jsonDeserializer = (MapperEnumValueDeserializer) new MapperEnumValueDeserializer()
+                .createContextual(mock(DeserializationContext.class), beanProperty);
+
+        var jsonParser = Mockito.mock(JsonParser.class);
+        when(jsonParser.currentToken()).thenReturn(JsonToken.VALUE_STRING);
+        when(jsonParser.getString()).thenReturn("  ");
+
+        assertNull(jsonDeserializer.deserialize(jsonParser, Mockito.mock(DeserializationContext.class)));
     }
 
     @DisplayName("Should return a new MapperEnumValueDeserializer instance with MockMapperEnum JsonType")

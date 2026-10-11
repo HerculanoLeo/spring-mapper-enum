@@ -6,6 +6,7 @@ import com.herculanoleo.spring.me.spi.MapperEnumTypeContributor;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.format.Formatter;
 
 import java.util.*;
@@ -23,17 +24,24 @@ import java.util.*;
  * <p>Imported as a Spring bean by {@link com.herculanoleo.spring.me.models.annotation.EnableMapperEnum}
  * and shared with {@link FeignStartConfiguration}.
  */
-public class MapperResourceLoader {
+public class MapperResourceLoader implements BeanClassLoaderAware {
 
     private static final Logger log = LoggerFactory.getLogger(MapperResourceLoader.class);
 
     private final MapperEnumFormatterFactory formatterFactory = new MapperEnumFormatterFactory();
+
+    private ClassLoader classLoader = MapperResourceLoader.class.getClassLoader();
 
     protected Collection<Class<? extends MapperEnum>> classes = List.of();
 
     private Map<Class<? extends MapperEnum>, Formatter<? extends MapperEnum>> formattersCache = Map.of();
 
     private List<MapperEnumTypeContributor> contributors = List.of();
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
 
     @PostConstruct
     public void setup() {
@@ -79,13 +87,22 @@ public class MapperResourceLoader {
     }
 
     private List<MapperEnumTypeContributor> loadContributors() {
-        var loaded = ServiceLoader.load(MapperEnumTypeContributor.class);
-        var contributors = new ArrayList<MapperEnumTypeContributor>();
+        var loaded = ServiceLoader.load(MapperEnumTypeContributor.class, classLoader);
+        var accepted = new ArrayList<MapperEnumTypeContributor>();
         for (var contributor : loaded) {
-            contributors.add(contributor);
+            var enumType = contributor.enumType();
+            if (enumType == null || !enumType.isEnum() || !MapperEnum.class.isAssignableFrom(enumType)) {
+                log.warn("Ignoring MapperEnumTypeContributor {} because {} is not a MapperEnum enum", contributor, enumType);
+                continue;
+            }
+            if (contributor.serializer() == null || contributor.deserializer() == null) {
+                log.warn("Ignoring MapperEnumTypeContributor {} because a Jackson adapter is missing", contributor);
+                continue;
+            }
+            accepted.add(contributor);
         }
-        contributors.sort(Comparator.comparing(c -> c.enumType().getName()));
-        return List.copyOf(contributors);
+        accepted.sort(Comparator.comparing(c -> c.enumType().getName()));
+        return List.copyOf(accepted);
     }
 
     private Map<Class<? extends MapperEnum>, Formatter<? extends MapperEnum>> buildFormatters(

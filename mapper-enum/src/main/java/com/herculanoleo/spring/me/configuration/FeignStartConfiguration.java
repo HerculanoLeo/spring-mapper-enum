@@ -1,23 +1,20 @@
 package com.herculanoleo.spring.me.configuration;
 
-import com.herculanoleo.spring.me.converter.web.MapperEnumFormatterAnnotationFactory;
 import com.herculanoleo.spring.me.models.feign.MapperEnumQueryMapEncoder;
 import feign.QueryMapEncoder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.openfeign.FeignFormatterRegistrar;
 import org.springframework.context.annotation.Bean;
-import org.springframework.format.FormatterRegistry;
-
-import java.util.HashSet;
 
 /**
- * Feign configuration imported by {@link com.herculanoleo.spring.me.models.annotation.EnableFeignMapperEnum}.
+ * Feign configuration imported by {@link com.herculanoleo.spring.me.models.annotation.EnableFeignMapperEnum}
+ * and by auto-configuration when OpenFeign is on the classpath.
  *
- * <p>Registers the same {@link com.herculanoleo.spring.me.converter.web.MapperEnumFormatter}s as
- * {@link StartConfiguration} on Feign's formatter registry and provides a
- * {@link com.herculanoleo.spring.me.models.feign.MapperEnumQueryMapEncoder} bean.
- *
- * <p>Do not import this class directly; use {@link com.herculanoleo.spring.me.models.annotation.EnableFeignMapperEnum}.
+ * <p>The query map encoder bean is skipped when the application already declared a
+ * {@link QueryMapEncoder}.
  */
+@ConditionalOnClass(QueryMapEncoder.class)
 public class FeignStartConfiguration implements FeignFormatterRegistrar {
 
     private final MapperResourceLoader mapperResourceLoader;
@@ -27,12 +24,8 @@ public class FeignStartConfiguration implements FeignFormatterRegistrar {
     }
 
     @Override
-    public void registerFormatters(FormatterRegistry registry) {
-        var formatters = mapperResourceLoader.serializableEnumFormatter();
-        formatters.forEach(registry::addFormatterForFieldType);
-        registry.addFormatterForFieldAnnotation(
-                new MapperEnumFormatterAnnotationFactory(new HashSet<>(mapperResourceLoader.getClasses()))
-        );
+    public void registerFormatters(org.springframework.format.FormatterRegistry registry) {
+        MapperEnumRegistrations.register(mapperResourceLoader, registry);
     }
 
     /**
@@ -42,6 +35,7 @@ public class FeignStartConfiguration implements FeignFormatterRegistrar {
      * @return the query map encoder bean
      */
     @Bean
+    @ConditionalOnMissingBean(QueryMapEncoder.class)
     public QueryMapEncoder serializableEnumQueryMapEncoder() {
         return new MapperEnumQueryMapEncoder();
     }
