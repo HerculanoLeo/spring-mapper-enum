@@ -30,23 +30,4 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Import(MapperEnumImportSelector.class)
 public @interface EnableMapperEnum {
-
-    /**
-     * Unused. Enum discovery is compile-time via {@link MappedEnum}.
-     *
-     * @return ignored package names
-     * @deprecated discovery does not scan packages
-     */
-    @Deprecated(since = "2.0.0")
-    String[] value() default {};
-
-    /**
-     * Unused. Enum discovery is compile-time via {@link MappedEnum}.
-     *
-     * @return ignored package names
-     * @deprecated discovery does not scan packages
-     */
-    @Deprecated(since = "2.0.0")
-    String[] basePackages() default {};
-
 }

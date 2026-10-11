@@ -10,6 +10,8 @@ A Spring Boot library that simplifies handling of enums with custom string repre
 *   **Jackson Integration:** Automatic JSON serialization to string values and deserialization from string values for `MapperEnum` instances.
 *   **Feign Client Support:** Includes a custom Feign `QueryMapEncoder` for correct `MapperEnum` encoding in query parameters when using `@SpringQueryMap`.
 *   **JPA Persistence:** Annotation-based generation of JPA `AttributeConverter`s (`@Converter(autoApply = true)`) for persisting `MapperEnum`s as their string values in the database.
+*   **WebFlux:** A reactive application registers the same formatters through `WebFluxConfigurer`. An MVC application does not receive a WebFlux dependency from this library.
+*   **OpenAPI:** When springdoc is on the classpath, schemas list the `getValue()` codes.
 *   **Centralized Enum Contract:** The `MapperEnum` interface provides a standard way to define custom string values, default/generic enum instances, and custom error messages. Use `MapperEnum.fromValue(...)` for resolution by `getValue()` (fallback or `IllegalArgumentException`), or `MapperEnum.findByValue(...)` for an `Optional` lookup.
 *   **Easy Setup:** Auto-configuration enables Spring MVC, Jackson, and, when those stacks are on the classpath, WebFlux and Feign. `@EnableMapperEnum` remains available when auto-configuration is excluded.
 *   **Compile-Time Registration:** Enums are registered at build time via `@MappedEnum` (no runtime classpath scanning), which keeps startup predictable and works well with GraalVM native images.
@@ -54,20 +56,27 @@ Add the dependency to your project.
 **Maven:**
 
 ```xml
-<dependency> 
-    <groupId>com.herculanoleo</groupId> 
-    <artifactId>spring-mapper-enum</artifactId> 
-    <version>X.Y.Z</version> 
+<dependency>
+    <groupId>com.herculanoleo</groupId>
+    <artifactId>spring-mapper-enum</artifactId>
+    <version>2.0.0</version>
+</dependency>
+<dependency>
+    <groupId>com.herculanoleo</groupId>
+    <artifactId>spring-mapper-enum-processor</artifactId>
+    <version>2.0.0</version>
+    <scope>provided</scope>
+    <optional>true</optional>
 </dependency>
 ```
 
 **Gradle:**
 ```groovy
-implementation 'com.herculanoleo:spring-mapper-enum:X.Y.Z'
-annotationProcessor 'com.herculanoleo:spring-mapper-enum:X.Y.Z'
-annotationProcessor 'com.herculanoleo:spring-mapper-enum-processor:X.Y.Z'
+implementation 'com.herculanoleo:spring-mapper-enum:2.0.0'
+annotationProcessor 'com.herculanoleo:spring-mapper-enum:2.0.0'
+annotationProcessor 'com.herculanoleo:spring-mapper-enum-processor:2.0.0'
 ```
-*(Note: Replace X.Y.Z with the latest library version. Gradle needs both artifacts on the annotation processor path because that path does not see the compile classpath.)*
+*(The annotation processor path does not see the compile classpath, so both artifacts must be listed there. `provided` and `optional` keep the processor out of the packaged application.)*
 
 To download the dependency using GitHub packages, follow these steps: [Working with the Apache Maven registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)
 
@@ -145,7 +154,7 @@ public enum TaskStatus implements MapperEnum {
 
 ## Enabling the Library
 
-Auto-configuration loads the library when `spring-mapper-enum` is on the classpath. `@EnableMapperEnum` imports the same configuration for applications that exclude auto-configuration. `value()` and `basePackages()` are deprecated and have no effect.
+Auto-configuration loads the library when `spring-mapper-enum` is on the classpath. `@EnableMapperEnum` imports the same configuration for applications that exclude auto-configuration.
 
 This will:
 *   Load all `MapperEnum` types registered at compile time (via `META-INF/services` and generated `MapperEnumTypeContributor` classes), using the Spring bean class loader.
