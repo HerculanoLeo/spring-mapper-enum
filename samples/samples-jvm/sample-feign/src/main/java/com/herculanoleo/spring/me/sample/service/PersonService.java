@@ -4,7 +4,7 @@ import com.herculanoleo.spring.me.sample.models.dto.PersonRegisterRequest;
 import com.herculanoleo.spring.me.sample.models.dto.PersonResponse;
 import com.herculanoleo.spring.me.sample.models.dto.PersonSearchRequest;
 import com.herculanoleo.spring.me.sample.models.dto.PersonUpdateRequest;
-import com.herculanoleo.spring.me.sample.openfeing.PersonClient;
+import com.herculanoleo.spring.me.sample.openfeign.PersonClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

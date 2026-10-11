@@ -40,4 +40,4 @@ jobs:
             }]
 
       - name: Deploy mapper-enum to GitHub Packages
-        run: mvn -B -Pgithub deploy -DskipTests -pl mapper-enum
+        run: mvn -B -Pgithub deploy -DskipTests -pl mapper-enum,mapper-enum-processor -am

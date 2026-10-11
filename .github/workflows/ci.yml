@@ -26,5 +26,5 @@ jobs:
           java-version: '17'
           cache: maven
 
-      - name: Test (mapper-enum + JVM samples)
-        run: mvn -B clean test -pl mapper-enum,samples/samples-jvm -am
+      - name: Test (mapper-enum + JVM and native samples)
+        run: mvn -B clean test -pl mapper-enum,mapper-enum-processor,samples/samples-jvm/sample-jpa,samples/samples-jvm/sample-feign,samples/samples-jvm/sample-webflux,samples/samples-native/sample-jpa,samples/samples-native/sample-feign -am -amd

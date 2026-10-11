@@ -17,6 +17,7 @@
     <modules>
         <module>sample-jpa</module>
         <module>sample-feign</module>
+        <module>sample-webflux</module>
     </modules>
 
 </project>

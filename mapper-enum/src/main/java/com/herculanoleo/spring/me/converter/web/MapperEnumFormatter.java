@@ -11,7 +11,7 @@ import java.util.Locale;
  * <p>{@link #parse(String, Locale)} delegates to {@link MapperEnum#fromValue(String, Class)}.
  * {@link #print(MapperEnum, Locale)} returns {@link MapperEnum#getValue()}.
  *
- * <p>Registered automatically for each {@link com.herculanoleo.spring.me.models.annotation.MapperEnumType}
+ * <p>Registered automatically for each {@link com.herculanoleo.spring.me.models.annotation.MappedEnum}
  * enum when {@link com.herculanoleo.spring.me.models.annotation.EnableMapperEnum} is active.
  */
 public class MapperEnumFormatter<E extends MapperEnum> implements Formatter<E> {
@@ -29,6 +29,9 @@ public class MapperEnumFormatter<E extends MapperEnum> implements Formatter<E> {
 
     @Override
     public E parse(String text, Locale locale) {
+        if (text == null || text.isBlank()) {
+            return null;
+        }
         return MapperEnum.fromValue(text, targetType);
     }
 

@@ -11,6 +11,7 @@
 
     <modules>
         <module>mapper-enum</module>
+        <module>mapper-enum-processor</module>
         <module>samples</module>
     </modules>
 </project>

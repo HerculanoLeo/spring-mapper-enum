@@ -9,7 +9,6 @@ spring:
     username: test
     password: test
   jpa:
-    database: h2
     properties:
       hibernate:
         show_sql: true

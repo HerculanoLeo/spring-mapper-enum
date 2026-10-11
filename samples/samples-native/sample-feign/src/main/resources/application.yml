@@ -4,3 +4,7 @@ server:
 spring:
   application:
     name: spring-mapper-enum-sample-feign-native
+
+person:
+  client:
+    url: http://localhost:8080/person
