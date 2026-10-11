@@ -5,102 +5,90 @@ import feign.Param;
 import feign.QueryMapEncoder;
 import feign.codec.EncodeException;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.RecordComponent;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * Feign {@link QueryMapEncoder} that encodes {@link MapperEnum} object fields using
- * {@link MapperEnum#getValue()} instead of {@link Object#toString()}.
+ * Feign {@link QueryMapEncoder} that encodes {@link MapperEnum} values with
+ * {@link MapperEnum#getValue()} using record accessors or JavaBean getters.
  *
- * <p>Based on Feign's {@code FieldQueryMapEncoder}, with {@link MapperEnum} awareness for
- * {@code @SpringQueryMap} DTOs. Registered as the {@code serializableEnumQueryMapEncoder} bean by
- * {@link com.herculanoleo.spring.me.configuration.FeignStartConfiguration} when
- * {@link com.herculanoleo.spring.me.models.annotation.EnableFeignMapperEnum} is present.
- *
- * <p><strong>Example</strong>
- * <pre>{@code
- * public record SearchQuery(MapperEnumMock status) {}
- *
- * // Encodes status as its getValue() string in the query map, not the enum name.
- * }</pre>
+ * <p>Static members and {@code transient} properties are omitted. Private fields are read only
+ * through their accessor.
  */
 public class MapperEnumQueryMapEncoder implements QueryMapEncoder {
-
-    private final Map<Class<?>, ObjectParamMetadata> classToMetadata = new ConcurrentHashMap<>();
 
     @Override
     public Map<String, Object> encode(Object object) throws EncodeException {
         if (object == null) {
             return Collections.emptyMap();
         }
-        ObjectParamMetadata metadata =
-                classToMetadata.computeIfAbsent(object.getClass(), ObjectParamMetadata::parseObjectType);
-
-        return metadata.objectFields.stream()
-                .map(field -> this.FieldValuePair(object, field))
-                .filter(fieldObjectPair -> fieldObjectPair.right.isPresent())
-                .collect(Collectors.toMap(this::fieldName, fieldObjectPair -> fieldObjectPair.right.get()));
-    }
-
-    private String fieldName(Pair<Field, Optional<Object>> pair) {
-        Param alias = pair.left.getAnnotation(Param.class);
-        return alias != null ? alias.value() : pair.left.getName();
-    }
-
-    private Pair<Field, Optional<Object>> FieldValuePair(Object object, Field field) {
         try {
-            var optional = Optional.ofNullable(field.get(object))
-                    .map(value -> {
-                        if (value instanceof MapperEnum e) {
-                            return e.getValue();
-                        }
-                        return value;
-                    });
-
-            return Pair.pair(field, optional);
-        } catch (IllegalAccessException e) {
-            throw new EncodeException("Failure encoding object into query map", e);
-        }
-    }
-
-    private static class ObjectParamMetadata {
-
-        private final List<Field> objectFields;
-
-        private ObjectParamMetadata(List<Field> objectFields) {
-            this.objectFields = Collections.unmodifiableList(objectFields);
-        }
-
-        private static ObjectParamMetadata parseObjectType(Class<?> type) {
-            List<Field> allFields = new ArrayList<>();
-
-            for (Class<?> currentClass = type;
-                 currentClass != null;
-                 currentClass = currentClass.getSuperclass()) {
-                Collections.addAll(allFields, currentClass.getDeclaredFields());
+            var encoded = new LinkedHashMap<String, Object>();
+            if (object.getClass().isRecord()) {
+                encodeRecord(object, encoded);
+            } else {
+                encodeBean(object, encoded);
             }
-
-            return new ObjectParamMetadata(
-                    allFields.stream()
-                            .filter(field -> !field.isSynthetic())
-                            .peek(field -> field.setAccessible(true))
-                            .collect(Collectors.toList()));
+            return encoded;
+        } catch (ReflectiveOperationException | IntrospectionException ex) {
+            throw new EncodeException("Failure encoding object into query map", ex);
         }
     }
 
-    private static class Pair<T, U> {
-        private Pair(T left, U right) {
-            this.right = right;
-            this.left = left;
-        }
-
-        public final T left;
-        public final U right;
-
-        public static <T, U> Pair<T, U> pair(T left, U right) {
-            return new Pair<>(left, right);
+    private void encodeRecord(Object object, Map<String, Object> encoded) throws IllegalAccessException, InvocationTargetException {
+        for (RecordComponent component : object.getClass().getRecordComponents()) {
+            if (Modifier.isStatic(component.getAccessor().getModifiers()) || isTransient(object.getClass(), component.getName())) {
+                continue;
+            }
+            var raw = component.getAccessor().invoke(object);
+            var alias = component.getAnnotation(Param.class);
+            if (alias == null) {
+                alias = component.getAccessor().getAnnotation(Param.class);
+            }
+            put(encoded, alias != null ? alias.value() : component.getName(), raw);
         }
     }
+
+    private void encodeBean(Object object, Map<String, Object> encoded) throws IntrospectionException, IllegalAccessException, InvocationTargetException {
+        BeanInfo info = Introspector.getBeanInfo(object.getClass(), Object.class);
+        for (PropertyDescriptor descriptor : info.getPropertyDescriptors()) {
+            Method reader = descriptor.getReadMethod();
+            if (reader == null || Modifier.isStatic(reader.getModifiers()) || isTransient(object.getClass(), descriptor.getName())) {
+                continue;
+            }
+            var raw = reader.invoke(object);
+            var alias = reader.getAnnotation(Param.class);
+            put(encoded, alias != null ? alias.value() : descriptor.getName(), raw);
+        }
+    }
+
+    private void put(Map<String, Object> encoded, String name, Object raw) {
+        if (raw == null) {
+            return;
+        }
+        encoded.put(name, raw instanceof MapperEnum mapperEnum ? mapperEnum.getValue() : raw);
+    }
+
+    private boolean isTransient(Class<?> type, String name) {
+        for (Class<?> current = type; current != null && current != Object.class; current = current.getSuperclass()) {
+            try {
+                Field field = current.getDeclaredField(name);
+                return Modifier.isTransient(field.getModifiers()) || Modifier.isStatic(field.getModifiers());
+            } catch (NoSuchFieldException ignored) {
+                // The property may be declared on a supertype.
+            }
+        }
+        return false;
+    }
+
 }

@@ -21,9 +21,9 @@ import java.lang.annotation.Target;
  *       instead of {@link Object#toString()}</li>
  * </ul>
  *
- * <p><strong>Requires</strong> {@link EnableMapperEnum} on the same application so
- * {@link com.herculanoleo.spring.me.configuration.MapperResourceLoader} is available.
- * Requires {@code spring-cloud-starter-openfeign} on the classpath.
+ * <p>{@link com.herculanoleo.spring.me.configuration.MapperResourceLoader} comes from auto-configuration.
+ * Requires {@code spring-cloud-starter-openfeign} on the classpath. When the application already
+ * defines a {@code QueryMapEncoder} bean, that bean is kept.
  *
  * @see EnableMapperEnum
  * @see MapperEnumQueryMapEncoder

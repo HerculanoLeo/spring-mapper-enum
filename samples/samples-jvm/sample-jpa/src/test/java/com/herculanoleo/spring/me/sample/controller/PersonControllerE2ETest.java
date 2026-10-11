@@ -120,6 +120,39 @@ public class PersonControllerE2ETest {
         assertTrue(body.contains(expectedResult));
     }
 
+    @DisplayName("Should treat a blank status query as no filter")
+    @Test
+    public void findAll_blank_status_returns_every_person() {
+        var responseEntity = restTemplate.exchange(
+                "/person?status=",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<Collection<Person>>() {
+                }
+        );
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        var body = responseEntity.getBody();
+
+        assertNotNull(body);
+        assertEquals(2, body.size());
+        assertTrue(body.containsAll(List.of(johnDoeEntity, zoeDoeEntity)));
+    }
+
+    @DisplayName("Should reject the enum constant name because only getValue is accepted")
+    @Test
+    public void findAll_enum_name_is_rejected() {
+        var responseEntity = restTemplate.exchange(
+                "/person?status=ACTIVE",
+                HttpMethod.GET,
+                null,
+                String.class
+        );
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+
     @DisplayName("Should execute a get to /person/{id} and validate json response")
     @Test
     public void findById_validate_json_response_test() throws JacksonException {

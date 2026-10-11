@@ -2,8 +2,9 @@
 
 | Workflow | When | Purpose |
 |----------|------|---------|
-| [ci.yml](ci.yml) | Push / PR | Fast test: `mapper-enum` + `samples-jvm` on the Boot version pinned in the POMs |
+| [ci.yml](ci.yml) | Push / PR | Fast test: `mapper-enum`, `samples-jvm`, and the JVM tests of `samples-native` on the Boot version pinned in the POMs |
 | [compatibility-matrix.yml](compatibility-matrix.yml) | Weekly, manual, or called by release | `mvn test` for each Spring Boot (+ Cloud) row in the matrix |
+| [native-image.yml](native-image.yml) | Weekly or manual | `mvn -Pnative native:compile` for the JPA and Feign native samples |
 | [release.yml](release.yml) | Tag `v*.*.*` | Matrix first, then `mvn -Pgithub deploy` |
 
 ## Extend the Boot version list
@@ -24,13 +25,15 @@ Use the [Spring Cloud release wiki](https://github.com/spring-cloud/spring-cloud
 
 Keep a separate branch (e.g. `1.x` / Boot 3) with its own matrix, or a separate workflow file that checks out that branch. Mixing Boot 3 and 4 in one reactor usually fails because of Jackson 2 vs 3.
 
-## Native image (optional)
+## Native image
 
-Native builds are slow and need GraalVM; run them manually or in a scheduled job, not on every PR:
+Native builds are slow and need GraalVM, so they stay out of the pull-request job. [native-image.yml](native-image.yml) runs every Monday and can be started with `workflow_dispatch`. It installs the library without `-Pnative`, then compiles each native sample.
+
+The same steps locally:
 
 ```bash
-mvn install -DskipTests
-cd samples/samples-native/sample-jpa && mvn -Pnative native:compile
+mvn -P '!github' install -DskipTests
+cd samples/samples-native/sample-jpa && mvn -P '!github,native' native:compile
 ```
 
 ## Nexus deploy

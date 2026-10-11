@@ -1,9 +1,8 @@
 package com.herculanoleo.spring.me.testsupport;
 
-import com.herculanoleo.spring.me.models.enums.MapperEnum;
+import com.herculanoleo.spring.me.converter.json.MapperEnumJson;
 import org.example.test.enums.OutsidePackageMapperMock;
 import tools.jackson.core.JsonParser;
-import tools.jackson.core.JsonToken;
 import tools.jackson.databind.DeserializationContext;
 import tools.jackson.databind.ValueDeserializer;
 
@@ -16,9 +15,6 @@ public final class OutsidePackageMapperMockJsonDeserializer extends ValueDeseria
 
     @Override
     public OutsidePackageMapperMock deserialize(JsonParser jsonParser, DeserializationContext context) {
-        if (jsonParser.currentToken() == JsonToken.VALUE_NULL) {
-            return null;
-        }
-        return (OutsidePackageMapperMock) MapperEnum.fromValue(jsonParser.getString(), OutsidePackageMapperMock.class);
+        return MapperEnumJson.read(jsonParser, context, OutsidePackageMapperMock.class);
     }
 }

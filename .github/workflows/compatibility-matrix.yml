@@ -46,6 +46,11 @@ jobs:
             -DskipResolution=true \
             -DgenerateBackupPoms=false
           mvn -B org.codehaus.mojo:versions-maven-plugin:2.18.0:update-parent \
+            -pl mapper-enum-processor \
+            -DparentVersion="$BOOT" \
+            -DskipResolution=true \
+            -DgenerateBackupPoms=false
+          mvn -B org.codehaus.mojo:versions-maven-plugin:2.18.0:update-parent \
             -pl samples \
             -DparentVersion="$BOOT" \
             -DskipResolution=true \

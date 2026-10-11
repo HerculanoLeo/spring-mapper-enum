@@ -1,6 +1,5 @@
 package com.herculanoleo.spring.me.converter.web;
 
-import com.herculanoleo.spring.me.converter.web.MapperEnumFormatter;
 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(MockitoExtension.class)
 public class MapperEnumFormatterTest {
@@ -47,6 +47,12 @@ public class MapperEnumFormatterTest {
         var locale = Mockito.mock(Locale.class);
         var result = formatter.print(MockMapperEnum.GENERIC_1, locale);
         assertEquals(MockMapperEnum.GENERIC_1.getValue(), result);
+    }
+
+    @DisplayName("Should treat a blank query value as an empty filter")
+    @Test
+    public void parseBlankTest() {
+        assertNull(formatter.parse("   ", Locale.ROOT));
     }
 
 }

@@ -10,9 +10,11 @@ A Spring Boot library that simplifies handling of enums with custom string repre
 *   **Jackson Integration:** Automatic JSON serialization to string values and deserialization from string values for `MapperEnum` instances.
 *   **Feign Client Support:** Includes a custom Feign `QueryMapEncoder` for correct `MapperEnum` encoding in query parameters when using `@SpringQueryMap`.
 *   **JPA Persistence:** Annotation-based generation of JPA `AttributeConverter`s (`@Converter(autoApply = true)`) for persisting `MapperEnum`s as their string values in the database.
-*   **Centralized Enum Contract:** The `MapperEnum` interface provides a standard way to define custom string values, default/generic enum instances, and custom error messages. Use `MapperEnum.fromValue(...)` for strict resolution (generic or exception), or `MapperEnum.findByValue(...)` for an `Optional` lookup without exceptions.
-*   **Easy Setup:** Quickly enable features with `@EnableMapperEnum` for core Spring/Jackson and `@EnableFeignMapperEnum` for Feign integration.
-*   **Compile-Time Registration:** Enums are registered at build time via `@MapperEnumType` (no runtime classpath scanning), which keeps startup predictable and works well with GraalVM native images.
+*   **WebFlux:** A reactive application registers the same formatters through `WebFluxConfigurer`. An MVC application does not receive a WebFlux dependency from this library.
+*   **OpenAPI:** When springdoc is on the classpath, schemas list the `getValue()` codes.
+*   **Centralized Enum Contract:** The `MapperEnum` interface provides a standard way to define custom string values, default/generic enum instances, and custom error messages. Use `MapperEnum.fromValue(...)` for resolution by `getValue()` (fallback or `IllegalArgumentException`), or `MapperEnum.findByValue(...)` for an `Optional` lookup.
+*   **Easy Setup:** Auto-configuration enables Spring MVC, Jackson, and, when those stacks are on the classpath, WebFlux and Feign. `@EnableMapperEnum` remains available when auto-configuration is excluded.
+*   **Compile-Time Registration:** Enums are registered at build time via `@MappedEnum` (no runtime classpath scanning), which keeps startup predictable and works well with GraalVM native images.
 *   **Reduced Boilerplate:** Minimizes the need for manual converter and serializer/deserializer implementations.
 
 ## Why use this library?
@@ -31,6 +33,8 @@ A Spring Boot library that simplifies handling of enums with custom string repre
 *   **Optional:**
     *   Spring Cloud OpenFeign (for Feign client integration)
     *   Spring Data JPA (for JPA `AttributeConverter` generation)
+    *   Spring WebFlux (query and path conversion on a reactive application; JSON already uses the shared Jackson module)
+    *   springdoc OpenAPI (schemas list `getValue()` codes)
 
 ## Version compatibility
 
@@ -52,24 +56,33 @@ Add the dependency to your project.
 **Maven:**
 
 ```xml
-<dependency> 
-    <groupId>com.herculanoleo</groupId> 
-    <artifactId>spring-mapper-enum</artifactId> 
-    <version>X.Y.Z</version> 
+<dependency>
+    <groupId>com.herculanoleo</groupId>
+    <artifactId>spring-mapper-enum</artifactId>
+    <version>2.0.0</version>
+</dependency>
+<dependency>
+    <groupId>com.herculanoleo</groupId>
+    <artifactId>spring-mapper-enum-processor</artifactId>
+    <version>2.0.0</version>
+    <scope>provided</scope>
+    <optional>true</optional>
 </dependency>
 ```
 
 **Gradle:**
 ```groovy
-implementation 'com.herculanoleo:spring-mapper-enum:X.Y.Z'
+implementation 'com.herculanoleo:spring-mapper-enum:2.0.0'
+annotationProcessor 'com.herculanoleo:spring-mapper-enum:2.0.0'
+annotationProcessor 'com.herculanoleo:spring-mapper-enum-processor:2.0.0'
 ```
-*(Note: Replace X.Y.Z with the latest library version.)*
+*(The annotation processor path does not see the compile classpath, so both artifacts must be listed there. `provided` and `optional` keep the processor out of the packaged application.)*
 
 To download the dependency using GitHub packages, follow these steps: [Working with the Apache Maven registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)
 
 ## Observations
 
-Add `spring-mapper-enum` to `annotationProcessorPaths` in `maven-compiler-plugin` so the library can generate JSON serializers/deserializers, `MapperEnumTypeContributor` implementations, and (when applicable) JPA converters at compile time. If you use other code generators (`hibernate-processor`, `lombok`, etc.), list them together in the same `annotationProcessorPaths` block. See [samples/samples-jvm/sample-jpa/pom.xml](samples/samples-jvm/sample-jpa/pom.xml) for a full example.
+Add `spring-mapper-enum-processor` and `spring-mapper-enum` to `annotationProcessorPaths` in `maven-compiler-plugin` so the library can generate JSON serializers/deserializers, `MapperEnumTypeContributor` implementations, and (when applicable) JPA converters at compile time. The processor path is isolated, so the runtime artifact must be listed next to the processor. If you use other code generators (`hibernate-processor`, `lombok`, etc.), list them together in the same `annotationProcessorPaths` block. See [samples/samples-jvm/sample-jpa/pom.xml](samples/samples-jvm/sample-jpa/pom.xml) for a full example.
 
 When writing integration tests with `TestRestTemplate` on Spring Boot 4, add the test dependencies `spring-boot-starter-webmvc-test` and `spring-boot-starter-restclient`, and annotate the test class with `@AutoConfigureTestRestTemplate`. The [samples-jvm/sample-jpa](samples/samples-jvm/sample-jpa) module demonstrates this setup.
 
@@ -79,7 +92,7 @@ Sample layout: [samples-jvm](samples/samples-jvm/) (JPA + Feign on the JVM) and 
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.13.0</version>
+    <version>3.14.1</version>
     <configuration>
         <generatedSourcesDirectory>${project.build.directory}/generated-sources/</generatedSourcesDirectory>
         <annotationProcessorPaths>
@@ -92,6 +105,11 @@ Sample layout: [samples-jvm](samples/samples-jvm/) (JPA + Feign on the JVM) and 
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </path>
+            <path>
+                <groupId>com.herculanoleo</groupId>
+                <artifactId>spring-mapper-enum-processor</artifactId>
+                <version>${project.version}</version>
             </path>
             <path>
                 <groupId>com.herculanoleo</groupId>
@@ -110,12 +128,10 @@ Any enum that you want this library to manage must implement the `com.herculanol
 **Example `MapperEnum` Implementation:**
 
 ```java 
-import com.herculanoleo.spring.me.models.annotation.MapperEnumDBConverter;
-import com.herculanoleo.spring.me.models.annotation.MapperEnumType;
+import com.herculanoleo.spring.me.models.annotation.MappedEnum;
 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 
-@MapperEnumType
-@MapperEnumDBConverter
+@MappedEnum
 public enum TaskStatus implements MapperEnum {
     TODO("T"),
     DOING("D"),
@@ -138,24 +154,26 @@ public enum TaskStatus implements MapperEnum {
 
 ## Enabling the Library
 
-To activate the library's features, add the `@EnableMapperEnum` annotation to one of your Spring `@Configuration` classes (often your main application class).
+Auto-configuration loads the library when `spring-mapper-enum` is on the classpath. `@EnableMapperEnum` imports the same configuration for applications that exclude auto-configuration.
 
 This will:
-*   Load all `MapperEnum` types registered at compile time (via `META-INF/services` and generated `MapperEnumTypeContributor` classes).
-*   Register Spring `Formatter`s for each registered type, enabling automatic conversion in Spring MVC.
-*   Register a Jackson module (`mapperEnumModule`) with type-specific serializers and deserializers (auto-configured by Spring Boot).
+*   Load all `MapperEnum` types registered at compile time (via `META-INF/services` and generated `MapperEnumTypeContributor` classes), using the Spring bean class loader.
+*   Register Spring `Formatter`s for each registered type on servlet MVC. A reactive application registers the same formatters through `WebFluxConfigurer`.
+*   Register a Jackson module (`mapperEnumModule`) with type-specific serializers and deserializers.
 
-Every enum must be annotated with `@MapperEnumType` (and `@MapperEnumDBConverter` when JPA is used). The annotation processor must run during your application build.
+Every enum must be annotated with `@MappedEnum` and implement `MapperEnum`. The annotation processor must run during your application build. Incoming values match `getValue()` only. A blank string is treated as no filter and becomes `null` in JSON, query parameters, and JPA columns. An unknown value throws `IllegalArgumentException`, which MVC wraps as a conversion failure and Jackson reports as `InvalidFormatException` (HTTP 400).
+
+`@MappedEnum(fallback = "CONSTANT_NAME")` maps unknown values to that constant. The processor warns when a fallback exists. Use a fallback only when an unknown value can safely become that constant. Authorization enums should omit it so unknown input fails.
 
 ## Usage Scenarios
 
-### 1. Spring MVC (Web Conversion)
+### 1. Spring MVC and WebFlux
 
-Once `@EnableMapperEnum` is active, enums implementing `MapperEnum` will be automatically converted from request parameters or path variables to their corresponding enum instances, and vice-versa.
+Formatters convert request parameters and path variables. MVC uses `mvcConversionService` when the application is a servlet app. WebFlux uses `webFluxConversionService` only when `spring.main.web-application-type=reactive` (or when WebFlux is the only web stack). An MVC application does not receive a WebFlux dependency from this library.
 
 ### 2. JSON Serialization/Deserialization (Jackson)
 
-With `@EnableMapperEnum`, Jackson is automatically configured to serialize `MapperEnum` instances to their `getValue()` string and deserialize them back using `MapperEnum.fromValue()`.
+Jackson serializes `MapperEnum` instances to their `getValue()` string and deserializes them with `MapperEnum.fromValue()`. A blank string becomes `null`. A number or object token is rejected.
 
 **Example DTO:**
 
@@ -178,20 +196,15 @@ The above JSON will be deserialized back to a `TaskDto` with `status` as `TaskSt
 
 ### 3. Feign Client Integration
 
-To enable `MapperEnum` support for Feign clients, especially when using `@SpringQueryMap`:
-
-1.  Add `@EnableMapperEnum` to register MVC/JSON converters for compile-time registered enums.
-2.  Add `@EnableFeignMapperEnum` to register the custom `MapperEnumQueryMapEncoder` and Feign formatters.
-
-`@EnableFeignMapperEnum` requires `@EnableMapperEnum` on the same application (it reuses the shared `MapperResourceLoader` bean).
+When `spring-cloud-starter-openfeign` is on the classpath, auto-configuration registers `MapperEnumQueryMapEncoder` unless the application already defined a `QueryMapEncoder` bean. `@EnableFeignMapperEnum` imports that same configuration. The encoder reads record accessors and JavaBean getters, writes `getValue()` for mapper enums, and skips `static` and `transient` properties.
 
 ### 4. JPA Persistence
 
 To persist `MapperEnum` instances as their string values in a database using JPA:
 
 1.  Ensure `spring-data-jpa` is a dependency in your project.
-2.  Annotate your enum with `@MapperEnumType` and `@MapperEnumDBConverter`.
-3.  The annotation processor generates an `AttributeConverter` (`@Converter(autoApply = true)`) for each annotated enum during the build.
+2.  Annotate your enum with `@MappedEnum`.
+3.  The annotation processor generates an `AttributeConverter` when `jakarta.persistence` is visible at compile time. `@MappedEnum(persist = false)` skips that converter. `@MappedEnum(autoApply = false)` keeps the converter from applying to every field of that type. Blank column values are read back as `null`.
 
 ## GraalVM / Spring Native
 
@@ -199,7 +212,7 @@ To persist `MapperEnum` instances as their string values in a database using JPA
 
 On the **v2** line, enum types are discovered through generated `MapperEnumTypeContributor` classes and `META-INF/services` entries (not runtime classpath scanning), so the library is compatible with native image builds as long as:
 
-*   Every enum is annotated with `@MapperEnumType` (and `@MapperEnumDBConverter` when using JPA).
+*   Every enum is annotated with `@MappedEnum`.
 *   The annotation processor runs in the application build.
 *   Native reachability metadata includes your generated contributor and JSON classes (Spring Boot 4 native support generally picks up `META-INF/services` automatically).
 
