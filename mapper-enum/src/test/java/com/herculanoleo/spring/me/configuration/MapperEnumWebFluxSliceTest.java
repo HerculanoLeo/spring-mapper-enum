@@ -41,6 +41,10 @@ class MapperEnumWebFluxSliceTest {
                 .expectStatus().isOk()
                 .expectBody(String.class).isEqualTo("empty");
 
+        client.get().uri("/status?status=ACTIVE")
+                .exchange()
+                .expectStatus().isBadRequest();
+
         client.post().uri("/status")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue("{\"status\":\"I\"}")

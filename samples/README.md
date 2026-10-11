@@ -11,9 +11,9 @@ Example applications for **spring-mapper-enum**, organized as two mirrors:
 
 | Module | Demonstrates |
 |--------|----------------|
-| `sample-jpa` | Spring MVC, Jackson, JPA (`@MapperEnumType` + `@MapperEnumDBConverter`) |
-| `sample-feign` | Spring MVC, Jackson, OpenFeign query maps (`@EnableFeignMapperEnum`) |
-| `sample-webflux` | Spring WebFlux, Jackson, JPA on an in-memory H2 database |
+| `sample-jpa` | Spring MVC, Jackson, and JPA (`@MappedEnum`). Query and JSON use `getValue()` (`A`, `I`). A blank `status` does not filter. `status=ACTIVE` is rejected with HTTP 400. `/v3/api-docs` lists those same codes. |
+| `sample-feign` | OpenFeign `@SpringQueryMap` (`@EnableFeignMapperEnum`). `PersonStatus` is not a JPA enum here. The client writes `status=A`, and JSON `"A"` is read back as `PersonStatus.ACTIVE`. `person.client.url` points at the JPA sample. |
+| `sample-webflux` | Spring WebFlux, Jackson, and JPA on an in-memory H2 database. A blank `status` does not filter. The constant name `ACTIVE` and a numeric JSON token are rejected with HTTP 400. |
 
 [samples-native](samples-native/) mirrors `sample-jpa` and `sample-feign` for a GraalVM native image.
 

@@ -1,6 +1,6 @@
 package com.herculanoleo.spring.me.models.enums;
 
-import com.herculanoleo.spring.me.models.annotation.MapperEnumType;
+import com.herculanoleo.spring.me.models.annotation.MappedEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,7 +50,7 @@ public class MapperEnumTest {
         }
     }
 
-    @MapperEnumType(fallback = "GENERIC_1")
+    @MappedEnum(fallback = "GENERIC_1")
     private enum MockFallbackAnnotationEnum implements MapperEnum {
         GENERIC_1("G_1"),
         GENERIC_2("G_2"),
@@ -120,7 +120,7 @@ public class MapperEnumTest {
         assertEquals(MockSerializableWithGenericEnum.GENERIC_1, enumMock);
     }
 
-    @DisplayName("Should use the fallback constant declared on MapperEnumType")
+    @DisplayName("Should use the fallback constant declared on MappedEnum")
     @Test
     public void fromValueAnnotationFallbackTest() {
         var enumMock = MapperEnum.fromValue("unknown", MockFallbackAnnotationEnum.class);

@@ -14,19 +14,18 @@ import java.lang.annotation.Target;
  *   <li>A {@link com.herculanoleo.spring.me.spi.MapperEnumTypeContributor} implementation</li>
  *   <li>A {@code META-INF/services/com.herculanoleo.spring.me.spi.MapperEnumTypeContributor}
  *       entry for {@link java.util.ServiceLoader} discovery at startup</li>
+ *   <li>A JPA {@code AttributeConverter} when {@code jakarta.persistence.AttributeConverter}
+ *       is visible and {@link #persist()} is {@code true}</li>
  * </ul>
  *
  * <p>This approach avoids runtime classpath scanning and works well with GraalVM native images,
  * provided the annotation processor runs in the application build.
  *
- * <p>Use together with {@link MapperEnumDBConverter} when the enum is persisted with JPA.
- *
  * @see com.herculanoleo.spring.me.models.annotation.EnableMapperEnum
- * @see MapperEnumDBConverter
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MapperEnumType {
+public @interface MappedEnum {
 
     /**
      * Enum constant name used when an incoming value does not match {@code getValue()}.
@@ -41,5 +40,19 @@ public @interface MapperEnumType {
      * @return the simple name of a constant of this enum, or an empty string
      */
     String fallback() default "";
+
+    /**
+     * Generates a JPA {@code AttributeConverter} when the persistence API is on the compilation classpath.
+     *
+     * @return {@code false} to keep the enum out of JPA even when persistence is present
+     */
+    boolean persist() default true;
+
+    /**
+     * Value copied to the generated {@code @Converter(autoApply)} attribute.
+     *
+     * @return {@code true} to apply the converter to every field of this enum type
+     */
+    boolean autoApply() default true;
 
 }

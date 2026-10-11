@@ -1,4 +1,4 @@
-package com.herculanoleo.spring.me.sample.openfeing;
+package com.herculanoleo.spring.me.sample.openfeign;
 
 import com.herculanoleo.spring.me.sample.models.dto.PersonRegisterRequest;
 import com.herculanoleo.spring.me.sample.models.dto.PersonResponse;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @FeignClient(
         name = "person-client",
-        url = "http://localhost:8080/person"
+        url = "${person.client.url}"
 )
 public interface PersonClient {
 
@@ -27,7 +27,7 @@ public interface PersonClient {
     PersonResponse register(@RequestBody PersonRegisterRequest requestEntity);
 
     @PutMapping("{id}")
-    PersonResponse update(@PathVariable UUID id, PersonUpdateRequest requestEntity);
+    PersonResponse update(@PathVariable UUID id, @RequestBody PersonUpdateRequest requestEntity);
 
     @PutMapping("{id}/active")
     Void active(@PathVariable UUID id);

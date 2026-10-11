@@ -1,8 +1,7 @@
 package com.herculanoleo.spring.me.processor;
 
 import com.google.auto.service.AutoService;
-import com.herculanoleo.spring.me.models.annotation.MapperEnumDBConverter;
-import com.herculanoleo.spring.me.models.annotation.MapperEnumType;
+import com.herculanoleo.spring.me.models.annotation.MappedEnum;
 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 import com.herculanoleo.spring.me.spi.MapperEnumTypeContributor;
 import com.palantir.javapoet.AnnotationSpec;
@@ -23,7 +22,6 @@ import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
@@ -45,19 +43,13 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Annotation processor that runs at compile time for enums annotated with
- * {@link MapperEnumType} and/or {@link MapperEnumDBConverter}.
+ * Annotation processor that runs at compile time for enums annotated with {@link MappedEnum}.
  */
 @AutoService(Processor.class)
-@SupportedAnnotationTypes({
-        GeneratedMapperEnumProcessor.MAPPER_ENUM_TYPE,
-        GeneratedMapperEnumProcessor.MAPPER_ENUM_DB_CONVERTER
-})
+@SupportedAnnotationTypes(GeneratedMapperEnumProcessor.MAPPED_ENUM)
 public class GeneratedMapperEnumProcessor extends AbstractProcessor {
 
-    static final String MAPPER_ENUM_TYPE = "com.herculanoleo.spring.me.models.annotation.MapperEnumType";
-
-    static final String MAPPER_ENUM_DB_CONVERTER = "com.herculanoleo.spring.me.models.annotation.MapperEnumDBConverter";
+    static final String MAPPED_ENUM = "com.herculanoleo.spring.me.models.annotation.MappedEnum";
 
     private static final String CONTRIBUTOR_SERVICE_RESOURCE =
             "META-INF/services/com.herculanoleo.spring.me.spi.MapperEnumTypeContributor";
@@ -87,8 +79,7 @@ public class GeneratedMapperEnumProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         var elements = new LinkedHashSet<Element>();
-        elements.addAll(roundEnv.getElementsAnnotatedWith(MapperEnumType.class));
-        elements.addAll(roundEnv.getElementsAnnotatedWith(MapperEnumDBConverter.class));
+        elements.addAll(roundEnv.getElementsAnnotatedWith(MappedEnum.class));
 
         for (var element : elements) {
             if (element.getKind() == ElementKind.ENUM && element instanceof TypeElement enumElement) {
@@ -132,7 +123,7 @@ public class GeneratedMapperEnumProcessor extends AbstractProcessor {
             var contributorClass = generateContributor(basePackage, enumName, enumClass);
             contributorClassNames.add(contributorClass.canonicalName());
 
-            if (jpaAvailable() && hasAnnotation(enumElement, MAPPER_ENUM_DB_CONVERTER)) {
+            if (jpaAvailable() && persist(enumElement)) {
                 generateJpaConverter(basePackage, enumName, enumClass, autoApply(enumElement));
             }
         } catch (IOException e) {
@@ -167,7 +158,7 @@ public class GeneratedMapperEnumProcessor extends AbstractProcessor {
                 .map(element -> element.getSimpleName().toString())
                 .toList();
         if (!names.contains(fallback)) {
-            error(enumElement, "MapperEnumType.fallback \"" + fallback + "\" is not a constant of " + enumElement.getSimpleName());
+            error(enumElement, "MappedEnum.fallback \"" + fallback + "\" is not a constant of " + enumElement.getSimpleName());
         }
     }
 
@@ -389,30 +380,31 @@ public class GeneratedMapperEnumProcessor extends AbstractProcessor {
         return processingEnv.getTypeUtils().isAssignable(typeElement.asType(), mapperEnumType);
     }
 
-    private boolean hasAnnotation(TypeElement typeElement, String annotationName) {
-        return typeElement.getAnnotationMirrors().stream()
-                .map(AnnotationMirror::getAnnotationType)
-                .map(TypeMirror::toString)
-                .anyMatch(annotationName::equals);
+    private boolean persist(TypeElement typeElement) {
+        return booleanMember(typeElement, "persist", true);
     }
 
     private boolean autoApply(TypeElement typeElement) {
+        return booleanMember(typeElement, "autoApply", true);
+    }
+
+    private boolean booleanMember(TypeElement typeElement, String name, boolean defaultValue) {
         for (var mirror : typeElement.getAnnotationMirrors()) {
-            if (!MAPPER_ENUM_DB_CONVERTER.equals(mirror.getAnnotationType().toString())) {
+            if (!MAPPED_ENUM.equals(mirror.getAnnotationType().toString())) {
                 continue;
             }
             for (var entry : mirror.getElementValues().entrySet()) {
-                if (entry.getKey().getSimpleName().contentEquals("autoApply")) {
+                if (entry.getKey().getSimpleName().contentEquals(name)) {
                     return Boolean.TRUE.equals(entry.getValue().getValue());
                 }
             }
         }
-        return true;
+        return defaultValue;
     }
 
     private String fallbackName(TypeElement typeElement) {
         for (var mirror : typeElement.getAnnotationMirrors()) {
-            if (!MAPPER_ENUM_TYPE.equals(mirror.getAnnotationType().toString())) {
+            if (!MAPPED_ENUM.equals(mirror.getAnnotationType().toString())) {
                 continue;
             }
             for (var entry : mirror.getElementValues().entrySet()) {

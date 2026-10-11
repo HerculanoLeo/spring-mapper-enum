@@ -15,10 +15,10 @@ class GeneratedMapperEnumProcessorTest {
     private static final String ENUM_SOURCE = """
             package com.example.task;
 
-            import com.herculanoleo.spring.me.models.annotation.MapperEnumType;
+            import com.herculanoleo.spring.me.models.annotation.MappedEnum;
             import com.herculanoleo.spring.me.models.enums.MapperEnum;
 
-            @MapperEnumType
+            @MappedEnum
             public enum TaskStatus implements MapperEnum {
                 TODO("T"),
                 DONE("D");
@@ -61,10 +61,10 @@ class GeneratedMapperEnumProcessorTest {
         Compilation compilation = compile("""
                 package com.example.task;
 
-                import com.herculanoleo.spring.me.models.annotation.MapperEnumType;
+                import com.herculanoleo.spring.me.models.annotation.MappedEnum;
                 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 
-                @MapperEnumType
+                @MappedEnum
                 public enum TaskStatus implements MapperEnum {
                     TODO("T"),
                     DONE("T");
@@ -92,10 +92,10 @@ class GeneratedMapperEnumProcessorTest {
         Compilation compilation = compile("""
                 package com.example.task;
 
-                import com.herculanoleo.spring.me.models.annotation.MapperEnumType;
+                import com.herculanoleo.spring.me.models.annotation.MappedEnum;
                 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 
-                @MapperEnumType
+                @MappedEnum
                 public enum TaskStatus implements MapperEnum {
                     TODO("DONE"),
                     DONE("D");
@@ -123,12 +123,10 @@ class GeneratedMapperEnumProcessorTest {
         Compilation compilation = compile("""
                 package com.example.task;
 
-                import com.herculanoleo.spring.me.models.annotation.MapperEnumDBConverter;
-                import com.herculanoleo.spring.me.models.annotation.MapperEnumType;
+                import com.herculanoleo.spring.me.models.annotation.MappedEnum;
                 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 
-                @MapperEnumType
-                @MapperEnumDBConverter(autoApply = false)
+                @MappedEnum(autoApply = false)
                 public enum TaskStatus implements MapperEnum {
                     TODO("T");
 
@@ -151,6 +149,38 @@ class GeneratedMapperEnumProcessorTest {
                 .contentsAsUtf8String();
         converter.contains("autoApply = false");
         converter.contains("value.isBlank()");
+    }
+
+    @DisplayName("Should skip the JPA converter when persist is false")
+    @Test
+    void skipsJpaConverterWhenPersistIsDisabled() {
+        Compilation compilation = compile("""
+                package com.example.task;
+
+                import com.herculanoleo.spring.me.models.annotation.MappedEnum;
+                import com.herculanoleo.spring.me.models.enums.MapperEnum;
+
+                @MappedEnum(persist = false)
+                public enum TaskStatus implements MapperEnum {
+                    TODO("T");
+
+                    private final String value;
+
+                    TaskStatus(String value) {
+                        this.value = value;
+                    }
+
+                    @Override
+                    public String getValue() {
+                        return value;
+                    }
+                }
+                """);
+
+        assertThat(compilation).succeeded();
+        org.junit.jupiter.api.Assertions.assertFalse(
+                compilation.generatedSourceFiles().stream().anyMatch(file -> file.getName().contains("TaskStatusConverter"))
+        );
     }
 
     private static Compilation compile(String source) {

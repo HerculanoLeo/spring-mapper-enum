@@ -12,7 +12,7 @@ A Spring Boot library that simplifies handling of enums with custom string repre
 *   **JPA Persistence:** Annotation-based generation of JPA `AttributeConverter`s (`@Converter(autoApply = true)`) for persisting `MapperEnum`s as their string values in the database.
 *   **Centralized Enum Contract:** The `MapperEnum` interface provides a standard way to define custom string values, default/generic enum instances, and custom error messages. Use `MapperEnum.fromValue(...)` for resolution by `getValue()` (fallback or `IllegalArgumentException`), or `MapperEnum.findByValue(...)` for an `Optional` lookup.
 *   **Easy Setup:** Auto-configuration enables Spring MVC, Jackson, and, when those stacks are on the classpath, WebFlux and Feign. `@EnableMapperEnum` remains available when auto-configuration is excluded.
-*   **Compile-Time Registration:** Enums are registered at build time via `@MapperEnumType` (no runtime classpath scanning), which keeps startup predictable and works well with GraalVM native images.
+*   **Compile-Time Registration:** Enums are registered at build time via `@MappedEnum` (no runtime classpath scanning), which keeps startup predictable and works well with GraalVM native images.
 *   **Reduced Boilerplate:** Minimizes the need for manual converter and serializer/deserializer implementations.
 
 ## Why use this library?
@@ -119,12 +119,10 @@ Any enum that you want this library to manage must implement the `com.herculanol
 **Example `MapperEnum` Implementation:**
 
 ```java 
-import com.herculanoleo.spring.me.models.annotation.MapperEnumDBConverter;
-import com.herculanoleo.spring.me.models.annotation.MapperEnumType;
+import com.herculanoleo.spring.me.models.annotation.MappedEnum;
 import com.herculanoleo.spring.me.models.enums.MapperEnum;
 
-@MapperEnumType
-@MapperEnumDBConverter
+@MappedEnum
 public enum TaskStatus implements MapperEnum {
     TODO("T"),
     DOING("D"),
@@ -154,9 +152,9 @@ This will:
 *   Register Spring `Formatter`s for each registered type on servlet MVC. A reactive application registers the same formatters through `WebFluxConfigurer`.
 *   Register a Jackson module (`mapperEnumModule`) with type-specific serializers and deserializers.
 
-Every enum must be annotated with `@MapperEnumType` (and `@MapperEnumDBConverter` when JPA is used). The annotation processor must run during your application build. Incoming values match `getValue()` only. A blank string is treated as no filter and becomes `null` in JSON, query parameters, and JPA columns. An unknown value throws `IllegalArgumentException`, which MVC wraps as a conversion failure and Jackson reports as `InvalidFormatException` (HTTP 400).
+Every enum must be annotated with `@MappedEnum` and implement `MapperEnum`. The annotation processor must run during your application build. Incoming values match `getValue()` only. A blank string is treated as no filter and becomes `null` in JSON, query parameters, and JPA columns. An unknown value throws `IllegalArgumentException`, which MVC wraps as a conversion failure and Jackson reports as `InvalidFormatException` (HTTP 400).
 
-`@MapperEnumType(fallback = "CONSTANT_NAME")` maps unknown values to that constant. The processor warns when a fallback exists. Use a fallback only when an unknown value can safely become that constant. Authorization enums should omit it so unknown input fails.
+`@MappedEnum(fallback = "CONSTANT_NAME")` maps unknown values to that constant. The processor warns when a fallback exists. Use a fallback only when an unknown value can safely become that constant. Authorization enums should omit it so unknown input fails.
 
 ## Usage Scenarios
 
@@ -196,8 +194,8 @@ When `spring-cloud-starter-openfeign` is on the classpath, auto-configuration re
 To persist `MapperEnum` instances as their string values in a database using JPA:
 
 1.  Ensure `spring-data-jpa` is a dependency in your project.
-2.  Annotate your enum with `@MapperEnumType` and `@MapperEnumDBConverter`.
-3.  The annotation processor generates an `AttributeConverter` for each annotated enum. `@MapperEnumDBConverter(autoApply = true)` is the default. Set `autoApply = false` when another converter already applies to that type. Blank column values are read back as `null`.
+2.  Annotate your enum with `@MappedEnum`.
+3.  The annotation processor generates an `AttributeConverter` when `jakarta.persistence` is visible at compile time. `@MappedEnum(persist = false)` skips that converter. `@MappedEnum(autoApply = false)` keeps the converter from applying to every field of that type. Blank column values are read back as `null`.
 
 ## GraalVM / Spring Native
 
@@ -205,7 +203,7 @@ To persist `MapperEnum` instances as their string values in a database using JPA
 
 On the **v2** line, enum types are discovered through generated `MapperEnumTypeContributor` classes and `META-INF/services` entries (not runtime classpath scanning), so the library is compatible with native image builds as long as:
 
-*   Every enum is annotated with `@MapperEnumType` (and `@MapperEnumDBConverter` when using JPA).
+*   Every enum is annotated with `@MappedEnum`.
 *   The annotation processor runs in the application build.
 *   Native reachability metadata includes your generated contributor and JSON classes (Spring Boot 4 native support generally picks up `META-INF/services` automatically).
 

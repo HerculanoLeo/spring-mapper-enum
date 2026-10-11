@@ -19,11 +19,11 @@ import java.lang.annotation.Target;
  * <p><strong>Prerequisites</strong>
  * <ul>
  *   <li>Enums must implement {@link com.herculanoleo.spring.me.models.enums.MapperEnum}</li>
- *   <li>Enums must be annotated with {@link MapperEnumType}</li>
+ *   <li>Enums must be annotated with {@link MappedEnum}</li>
  *   <li>{@code spring-mapper-enum-processor} must run during the application build</li>
  * </ul>
  *
- * @see MapperEnumType
+ * @see MappedEnum
  * @see EnableFeignMapperEnum
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 public @interface EnableMapperEnum {
 
     /**
-     * Unused. Enum discovery is compile-time via {@link MapperEnumType}.
+     * Unused. Enum discovery is compile-time via {@link MappedEnum}.
      *
      * @return ignored package names
      * @deprecated discovery does not scan packages
@@ -41,7 +41,7 @@ public @interface EnableMapperEnum {
     String[] value() default {};
 
     /**
-     * Unused. Enum discovery is compile-time via {@link MapperEnumType}.
+     * Unused. Enum discovery is compile-time via {@link MappedEnum}.
      *
      * @return ignored package names
      * @deprecated discovery does not scan packages

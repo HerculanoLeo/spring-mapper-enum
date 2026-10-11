@@ -51,6 +51,10 @@ class PersonControllerWebFluxTest {
                 .expectBody()
                 .jsonPath("$.length()").isEqualTo(2);
 
+        client.get().uri("/person?status=ACTIVE")
+                .exchange()
+                .expectStatus().isBadRequest();
+
         client.post().uri("/person")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue("{\"name\":\"Invalid\",\"birthdate\":\"1992-03-03\",\"status\":1}")

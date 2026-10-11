@@ -1,9 +1,8 @@
 package com.herculanoleo.spring.me.models.enums;
 
-import com.herculanoleo.spring.me.models.annotation.MapperEnumType;
-import com.herculanoleo.spring.me.models.enums.MapperEnum;
+import com.herculanoleo.spring.me.models.annotation.MappedEnum;
 
-@MapperEnumType
+@MappedEnum
 public enum MapperEnumMock implements MapperEnum {
 
     ACTIVE("A"), INACTIVE("I"),

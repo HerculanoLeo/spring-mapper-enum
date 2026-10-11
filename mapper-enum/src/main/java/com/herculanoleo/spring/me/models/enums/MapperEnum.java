@@ -1,7 +1,7 @@
 package com.herculanoleo.spring.me.models.enums;
 
 
-import com.herculanoleo.spring.me.models.annotation.MapperEnumType;
+import com.herculanoleo.spring.me.models.annotation.MappedEnum;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -10,7 +10,7 @@ import java.util.Optional;
  * Contract for Java enums that map to a custom string value in HTTP, JSON, Feign, and the database.
  *
  * <p>Implement this interface on every enum you want the library to convert automatically.
- * Register the enum at compile time with {@link MapperEnumType} so serializers, deserializers,
+ * Register the enum at compile time with {@link MappedEnum} so serializers, deserializers,
  * and Spring formatters are generated and discovered via {@code META-INF/services}
  * (no runtime classpath scanning, which keeps startup predictable and native-image friendly).
  *
@@ -19,7 +19,7 @@ import java.util.Optional;
  *
  * <p><strong>Example</strong>
  * <pre>{@code
- * @MapperEnumType
+ * @MappedEnum
  * public enum TaskStatus implements MapperEnum {
  *     TODO("T"),
  *     DONE("D");
@@ -57,7 +57,7 @@ public interface MapperEnum {
      *
      * <p>Override on the first enum constant (convention used by {@link #generic(Class)}) to return
      * the default instance, or return {@code null} to reject unknown values with
-     * {@link IllegalArgumentException}. Prefer {@link MapperEnumType#fallback()} so the processor
+     * {@link IllegalArgumentException}. Prefer {@link MappedEnum#fallback()} so the processor
      * can check the constant name at compile time.
      *
      * <p>Unknown input becomes this constant. Use this only when that default is safe.
@@ -160,7 +160,7 @@ public interface MapperEnum {
     }
 
     private static <E extends MapperEnum> E fallback(Class<E> clazz) {
-        var declared = clazz.getAnnotation(MapperEnumType.class);
+        var declared = clazz.getAnnotation(MappedEnum.class);
         if (declared != null && !declared.fallback().isBlank()) {
             for (var constant : clazz.getEnumConstants()) {
                 if (declared.fallback().equals(((Enum<?>) constant).name())) {

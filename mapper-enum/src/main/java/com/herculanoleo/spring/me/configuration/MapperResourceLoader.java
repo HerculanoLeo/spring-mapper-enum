@@ -17,7 +17,7 @@ import java.util.*;
  *
  * <p>Contributors are discovered with {@link java.util.ServiceLoader} from
  * {@code META-INF/services/com.herculanoleo.spring.me.spi.MapperEnumTypeContributor}, populated
- * by the annotation processor for each {@link com.herculanoleo.spring.me.models.annotation.MapperEnumType}
+ * by the annotation processor for each {@link com.herculanoleo.spring.me.models.annotation.MappedEnum}
  * enum. This avoids runtime classpath scanning and supports GraalVM native images when the
  * application is built with the processor enabled.
  *
@@ -53,7 +53,7 @@ public class MapperResourceLoader implements BeanClassLoaderAware {
 
         if (classes.isEmpty()) {
             log.warn(
-                    "No MapperEnum types were registered. Annotate enums with @MapperEnumType or @MapperEnumDBConverter "
+                    "No MapperEnum types were registered. Annotate enums with @MappedEnum "
                             + "and ensure the annotation processor runs at compile time."
             );
         }
