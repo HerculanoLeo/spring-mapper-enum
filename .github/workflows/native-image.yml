@@ -21,7 +21,9 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '17'
+          # native-maven-plugin 1.1.14 rejects GraalVM 17: its reachability-metadata schema needs 21 or 25.
+          # Application bytecode stays on release 17 via java.version in the POMs.
+          java-version: '25'
           distribution: 'graalvm-community'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'false'

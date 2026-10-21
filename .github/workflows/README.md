@@ -27,7 +27,7 @@ Keep a separate branch (e.g. `1.x` / Boot 3) with its own matrix, or a separate 
 
 ## Native image
 
-Native builds are slow and need GraalVM, so they stay out of the pull-request job. [native-image.yml](native-image.yml) runs every Monday and can be started with `workflow_dispatch`. It installs the library without `-Pnative`, then compiles each native sample.
+Native builds are slow and need GraalVM 25 (`native-maven-plugin` 1.1.14 rejects GraalVM 17), so they stay out of the pull-request job. The library itself still compiles as Java 17. [native-image.yml](native-image.yml) runs every Monday and can be started with `workflow_dispatch`. It installs the library without `-Pnative`, then compiles each native sample.
 
 The same steps locally:
 

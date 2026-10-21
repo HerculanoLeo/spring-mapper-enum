@@ -24,7 +24,7 @@ mvn -pl samples/samples-native -am clean test
 
 ## Native executable
 
-Requires [GraalVM](https://www.graalvm.org/downloads/) with `native-image`.
+Requires [GraalVM](https://www.graalvm.org/downloads/) 25 with `native-image`. GraalVM 17 cannot read the reachability-metadata schema used by `native-maven-plugin` 1.1.14. The samples still compile to Java 17 bytecode.
 
 Install JVM artifacts first (**do not** use `-Pnative` on the full reactor — the library has no `main`):
 
